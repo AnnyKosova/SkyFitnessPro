@@ -1,0 +1,70 @@
+.header {
+  padding-top: 50px;
+  padding-left: 140px;
+  padding-right: 140px;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.logoSection {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  flex-shrink: 0;
+}
+
+.logoLink {
+  display: inline-block;
+}
+
+.logo {
+  display: block;
+}
+
+.tagline {
+  width: 327px;
+  height: 20px;
+  opacity: 0.5;
+  color: rgba(0, 0, 0, 1);
+  font-family: var(--font-roboto);
+  font-style: normal;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 110%;
+  letter-spacing: 0px;
+  text-align: left;
+  margin: 0;
+}
+
+.loginButton {
+  width: 103px;
+  height: 52px;
+  padding: 16px 26px;
+  background: rgba(188, 236, 48, 1);
+  border: none;
+  border-radius: 46px;
+  color: rgba(0, 0, 0, 1);
+  font-family: var(--font-roboto);
+  font-style: normal;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 110%;
+  letter-spacing: 0px;
+  text-align: center;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 730px;
+}
+
+.loginButton:hover {
+  opacity: 0.9;
+}
+
+.loginButton:active {
+  opacity: 0.8;
+}

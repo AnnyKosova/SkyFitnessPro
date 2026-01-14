@@ -1,8 +1,15 @@
+import Header from "@/components/Header/Header";
+import HeroSection from "@/components/HeroSection/HeroSection";
+import CoursesSection from "@/components/CoursesSection/CoursesSection";
+
 export default function Home() {
   return (
-    <main>
-      <h1>SkyFitness Pro</h1>
-      <p>Главная страница</p>
-    </main>
+    <>
+      <Header />
+      <main>
+        <HeroSection />
+        <CoursesSection />
+      </main>
+    </>
   );
 }

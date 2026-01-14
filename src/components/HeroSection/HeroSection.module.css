@@ -1,0 +1,44 @@
+.heroSection {
+  padding-left: 140px;
+  padding-right: 140px;
+  margin-top: 60px;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+}
+
+.headline {
+  width: 947px;
+  height: 120px;
+  color: rgba(0, 0, 0, 1);
+  font-family: var(--font-roboto);
+  font-style: normal;
+  font-size: 60px;
+  font-weight: 500;
+  line-height: 100%;
+  letter-spacing: 0px;
+  text-align: left;
+  margin: 0;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.speechBubble {
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: -40px; /* Поднимаем speech bubble выше */
+  margin-left: -77px; /* Отрицательный margin для наложения на текст */
+  position: relative;
+  z-index: 2; /* Speech bubble поверх текста */
+  margin-right: 0; /* Выравнивание по правому краю */
+  align-self: flex-end; /* Выравнивание по правому краю */
+}
+
+.bubbleImage {
+  display: block;
+}

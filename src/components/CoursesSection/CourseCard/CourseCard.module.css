@@ -1,0 +1,143 @@
+.card {
+  width: 360px;
+  height: 501px;
+  background: rgba(255, 255, 255, 1);
+  border-radius: 30px;
+  box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 0px 0px 15px 0px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0px 6px 80px -12px rgba(0, 0, 0, 0.18);
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.addButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1;
+  border: none;
+  padding: 0;
+  background: transparent;
+}
+
+.addButton:hover {
+  opacity: 0.9;
+}
+
+.plusIcon {
+  width: 40px;
+  height: 40px;
+  display: block;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding-left: 30px;
+  padding-right: 0;
+  padding-top: 24px;
+  padding-bottom: 0;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 1);
+  margin: 0 0 20px 0;
+  font-family: var(--font-roboto);
+  font-style: normal;
+  line-height: 110%;
+  letter-spacing: 0px;
+  text-align: left;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  width: 100%;
+}
+
+.detailRow {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.detailItem {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 50px;
+  background: rgba(247, 247, 247, 1);
+  font-family: var(--font-roboto);
+  font-style: normal;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 110%;
+  letter-spacing: 0px;
+  text-align: left;
+  color: rgba(32, 32, 32, 1);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.detailItem span {
+  white-space: nowrap;
+}
+
+.detailItem.days {
+  width: 103px;
+  height: 38px;
+}
+
+.detailItem.duration {
+  width: 163px;
+  height: 38px;
+}
+
+.detailItem.difficulty {
+  width: 129px;
+  height: 38px;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: block;
+}
