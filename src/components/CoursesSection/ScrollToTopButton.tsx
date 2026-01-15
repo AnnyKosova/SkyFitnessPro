@@ -1,9 +1,10 @@
 "use client";
 
+import type { MouseEvent } from "react";
 import styles from "./CoursesSection.module.css";
 
 export default function ScrollToTopButton() {
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     
     // Простой и надежный способ скролла

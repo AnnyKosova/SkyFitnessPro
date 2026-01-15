@@ -23,6 +23,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+body.noScroll {
+  overflow: hidden;
+}
+
 a {
   color: inherit;
   text-decoration: none;
