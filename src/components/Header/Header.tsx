@@ -10,6 +10,7 @@ type HeaderProps = {
   isAuthenticated?: boolean;
   userName?: string;
   forceMenuOpen?: boolean;
+  hideTagline?: boolean;
 };
 
 export default function Header({
@@ -17,6 +18,7 @@ export default function Header({
   isAuthenticated,
   userName,
   forceMenuOpen,
+  hideTagline,
 }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -43,7 +45,7 @@ export default function Header({
               priority
             />
           </Link>
-          <p className={styles.tagline}>Онлайн-тренировки для занятий дома</p>
+          {!hideTagline && <p className={styles.tagline}>Онлайн-тренировки для занятий дома</p>}
         </div>
         {isAuthenticated ? (
           <div className={styles.userMenuWrapper}>
