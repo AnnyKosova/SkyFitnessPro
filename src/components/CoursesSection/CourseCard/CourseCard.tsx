@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import styles from "./CourseCard.module.css";
 
 interface CourseCardProps {
@@ -14,7 +15,7 @@ interface CourseCardProps {
 
 export default function CourseCard({ course }: CourseCardProps) {
   return (
-    <div className={styles.card}>
+    <Link href={`/courses/${course.id}`} className={styles.card}>
       <div className={styles.imageWrapper}>
         <Image
           src={course.image}
@@ -23,7 +24,12 @@ export default function CourseCard({ course }: CourseCardProps) {
           height={300}
           className={styles.image}
         />
-        <button className={styles.addButton} aria-label="Добавить курс">
+        <button
+          className={styles.addButton}
+          aria-label="Добавить курс"
+          type="button"
+          onClick={(event) => event.preventDefault()}
+        >
           <Image
             src="/images/icons/Add-in-Circle.svg"
             alt=""
@@ -70,6 +76,6 @@ export default function CourseCard({ course }: CourseCardProps) {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
