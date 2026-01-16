@@ -43,13 +43,18 @@ const benefits = [
   "помогают противостоять стрессам",
 ];
 
-export default function CoursePage() {
+type CoursePageProps = {
+  title: string;
+  heroImageSrc: string;
+};
+
+export default function CoursePage({ title, heroImageSrc }: CoursePageProps) {
   return (
     <main className={styles.page}>
       <section className={styles.hero}>
         <Image
-          src="/images/courses/Yogapagecourse.png"
-          alt="Йога"
+          src={heroImageSrc}
+          alt={title}
           fill
           className={styles.heroImageAsset}
           priority
