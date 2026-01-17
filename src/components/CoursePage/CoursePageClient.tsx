@@ -10,9 +10,14 @@ import CoursePage from "./CoursePage";
 type CoursePageClientProps = {
   title: string;
   heroImageSrc: string;
+  heroImageSrcMobile?: string;
 };
 
-export default function CoursePageClient({ title, heroImageSrc }: CoursePageClientProps) {
+export default function CoursePageClient({
+  title,
+  heroImageSrc,
+  heroImageSrcMobile,
+}: CoursePageClientProps) {
   const { user, isAuthenticated } = useAuth();
   const IS_AUTH_PREVIEW = false;
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -51,7 +56,11 @@ export default function CoursePageClient({ title, heroImageSrc }: CoursePageClie
         isAuthenticated={IS_AUTH_PREVIEW || isAuthenticated}
         userName={userName}
       />
-      <CoursePage title={title} heroImageSrc={heroImageSrc} />
+      <CoursePage
+        title={title}
+        heroImageSrc={heroImageSrc}
+        heroImageSrcMobile={heroImageSrcMobile}
+      />
       <AuthModal isOpen={isAuthOpen} onClose={handleCloseAuth} onRegisterClick={handleOpenRegister} />
       <RegisterModal
         isOpen={isRegisterOpen}

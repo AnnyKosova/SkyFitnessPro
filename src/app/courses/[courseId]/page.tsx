@@ -3,12 +3,14 @@ import CoursePageClient from "@/components/CoursePage/CoursePageClient";
 type CourseConfig = {
   title: string;
   heroImageSrc: string;
+  heroImageSrcMobile?: string;
 };
 
 const courseConfig: Record<string, CourseConfig> = {
   yoga: {
     title: "Йога",
     heroImageSrc: "/images/courses/Yogapagecourse.png",
+    heroImageSrcMobile: "/images/courses/YogaMobpage.png",
   },
   stretching: {
     title: "Стретчинг",
@@ -31,5 +33,11 @@ const courseConfig: Record<string, CourseConfig> = {
 export default function CourseDetailsPage({ params }: { params: { courseId: string } }) {
   const currentConfig = courseConfig[params.courseId] ?? courseConfig.yoga;
 
-  return <CoursePageClient title={currentConfig.title} heroImageSrc={currentConfig.heroImageSrc} />;
+  return (
+    <CoursePageClient
+      title={currentConfig.title}
+      heroImageSrc={currentConfig.heroImageSrc}
+      heroImageSrcMobile={currentConfig.heroImageSrcMobile}
+    />
+  );
 }

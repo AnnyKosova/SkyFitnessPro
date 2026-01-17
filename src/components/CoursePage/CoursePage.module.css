@@ -13,8 +13,15 @@
 }
 
 .heroImageAsset {
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    width: 343px;
+    height: 325px;
+  }
 }
 
 .suitability {
@@ -40,11 +47,7 @@
   height: 141px;
   padding: 20px;
   border-radius: 28px;
-  background: linear-gradient(
-    152.61deg,
-    rgba(21, 23, 32, 1),
-    rgba(30, 33, 46, 1)
-  );
+  background: linear-gradient(152.61deg, rgba(21, 23, 32, 1), rgba(30, 33, 46, 1));
   display: flex;
   gap: 11.5px;
   align-items: center;
@@ -66,6 +69,14 @@
   line-height: 110%;
   color: rgba(255, 255, 255, 1);
   margin: 0;
+}
+
+.suitabilityTextDesktop {
+  display: inline;
+}
+
+.suitabilityTextMobile {
+  display: none;
 }
 
 .directions {
@@ -105,11 +116,25 @@
   display: block;
 }
 
-.promo {
+.promoWrapper {
   margin-top: 102px;
   width: 1160px;
   height: 486px;
   margin-bottom: 50px;
+  position: relative;
+  overflow: visible;
+}
+
+.promoDecor {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.promo {
+  width: 1160px;
+  height: 486px;
   background: rgba(255, 255, 255, 1);
   border-radius: 30px;
   padding: 40px;
@@ -119,7 +144,8 @@
   box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
   box-sizing: border-box;
   position: relative;
-  overflow: visible;
+  z-index: 2;
+  margin-top: -486px;
 }
 
 .promoContent {
@@ -164,7 +190,9 @@
   color: rgba(0, 0, 0, 1);
   border: none;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
 .promoButton:hover {
@@ -182,7 +210,7 @@
   justify-content: flex-end;
   position: relative;
   height: 100%;
-  z-index: 2;
+  z-index: 0;
 }
 
 .promoSwooshClip {
@@ -200,7 +228,7 @@
   bottom: -119px;
   width: 739px;
   height: auto;
-  z-index: 1;
+  z-index: -2;
 }
 
 .promoMan {
@@ -219,4 +247,155 @@
   width: 54px;
   height: auto;
   z-index: 3;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    margin-top: 40px;
+    width: 343px;
+    height: 325px;
+  }
+
+  .suitability {
+    margin-top: 40px;
+  }
+
+  .sectionTitle {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 24px;
+  }
+
+  .suitabilityCards {
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+  }
+
+  .suitabilityCard {
+    width: 343px;
+    height: 141px;
+    padding: 20px;
+    gap: 30px;
+  }
+
+  .suitabilityCardTight {
+    gap: 25px;
+  }
+
+  .suitabilityNumber {
+    width: 43px;
+    height: 101px;
+  }
+
+  .suitabilityNumberCompact {
+    width: 35px;
+  }
+
+  .suitabilityText {
+    font-size: 18px;
+  }
+
+  .suitabilityTextDesktop {
+    display: none;
+  }
+
+  .suitabilityTextMobile {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .directions {
+    margin-top: 40px;
+  }
+
+  .directionsList {
+    margin-top: 24px;
+    width: 343px;
+    height: 336px;
+    padding: 30px 30px 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .directionItem {
+    font-size: 18px;
+    font-weight: 400;
+  }
+
+  .directionIcon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .promoWrapper {
+    margin-top: 156px;
+    width: 343px;
+    height: 412px;
+  }
+
+  .promo {
+    width: 343px;
+    height: 412px;
+    padding: 30px;
+    margin-top: -412px;
+  }
+
+  .promoDecor {
+    z-index: 0;
+  }
+
+  .promoSwooshClip {
+    top: -156px;
+    left: -16px;
+    right: -16px;
+    height: 220px;
+    border-radius: 28px;
+  }
+
+  .promoContent {
+    width: 100%;
+  }
+
+  .promoTitle {
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 110%;
+    margin-bottom: 28px;
+  }
+
+  .promoList {
+    font-size: 18px;
+    margin-bottom: 28px;
+  }
+
+  .promoButton {
+    width: 283px;
+    height: 50px;
+    font-size: 16px;
+    text-align: center;
+  }
+
+  .promoSwoosh {
+    width: 520px;
+    height: auto;
+    right: -80px;
+    top: -20px;
+  }
+
+  .promoMan {
+    width: 334.1px;
+    height: 347.01px;
+    right: -102px;
+    top: -285px;
+  }
+
+  .promoStrip {
+    width: 40px;
+    height: auto;
+    right: 120px;
+    top: -150px;
+  }
 }
