@@ -25,7 +25,11 @@ const courses = [
   },
 ];
 
-export default function ProfilePage() {
+type ProfilePageProps = {
+  onSelectWorkout?: () => void;
+};
+
+export default function ProfilePage({ onSelectWorkout }: ProfilePageProps) {
   return (
     <main className={styles.page}>
       <h1 className={styles.title}>Профиль</h1>
@@ -114,7 +118,7 @@ export default function ProfilePage() {
                     />
                   </div>
                 </div>
-                <button className={styles.courseAction} type="button">
+                <button className={styles.courseAction} type="button" onClick={onSelectWorkout}>
                   {course.actionLabel}
                 </button>
               </div>

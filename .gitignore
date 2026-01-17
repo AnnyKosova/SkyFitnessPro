@@ -37,4 +37,8 @@ next-env.d.ts
 
 # npm cache
 .npm-cache/
+.cursor/
+BRANCHES_PLAN.md
+FONTS_INFO.md
+QUESTIONS_FOR_MENTOR.md
 .npm/

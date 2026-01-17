@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import styles from "./Header.module.css";
 
@@ -20,6 +21,7 @@ export default function Header({
   forceMenuOpen,
   hideTagline,
 }: HeaderProps) {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = useCallback(() => {
@@ -30,6 +32,16 @@ export default function Header({
   }, [forceMenuOpen]);
 
   const isMenuVisible = forceMenuOpen || isMenuOpen;
+
+  const handleProfileClick = useCallback(() => {
+    setIsMenuOpen(false);
+    router.push("/profile");
+  }, [router]);
+
+  const handleLogoutClick = useCallback(() => {
+    setIsMenuOpen(false);
+    router.push("/");
+  }, [router]);
 
   return (
     <header className={styles.header}>
@@ -70,10 +82,18 @@ export default function Header({
               <div className={styles.userMenu}>
                 <p className={styles.userMenuName}>{userName ?? "Сергей"}</p>
                 <p className={styles.userMenuEmail}>sergey.petrov96@mail.ru</p>
-                <button className={styles.userMenuPrimary} type="button">
+                <button
+                  className={styles.userMenuPrimary}
+                  type="button"
+                  onClick={handleProfileClick}
+                >
                   Мой профиль
                 </button>
-                <button className={styles.userMenuSecondary} type="button">
+                <button
+                  className={styles.userMenuSecondary}
+                  type="button"
+                  onClick={handleLogoutClick}
+                >
                   Выйти
                 </button>
               </div>
