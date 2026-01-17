@@ -23,6 +23,22 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+:root {
+  --page-padding: 140px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --page-padding: 16px;
+  }
+
+  html,
+  body {
+    overflow-y: auto;
+    height: auto;
+  }
+}
+
 body.noScroll {
   overflow: hidden;
 }

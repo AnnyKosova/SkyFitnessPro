@@ -6,9 +6,16 @@ export default function HeroSection() {
     <section className={styles.heroSection}>
       <div className={styles.container}>
         <h1 className={styles.headline}>
-          Начните заниматься спортом
-          <br />
-          и улучшите качество жизни
+          <span className={styles.desktopHeadline}>
+            Начните заниматься спортом
+            <br />
+            и улучшите качество жизни
+          </span>
+          <span className={styles.mobileHeadline}>
+            <span>Начните заниматься</span>
+            <span>спортом и улучшите</span>
+            <span>качество жизни</span>
+          </span>
         </h1>
         <div className={styles.speechBubble}>
           <Image

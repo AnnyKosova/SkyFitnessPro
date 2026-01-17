@@ -1,6 +1,6 @@
 .heroSection {
-  padding-left: 140px;
-  padding-right: 140px;
+  padding-left: var(--page-padding);
+  padding-right: var(--page-padding);
   margin-top: 60px;
 }
 
@@ -28,6 +28,14 @@
   z-index: 1;
 }
 
+.desktopHeadline {
+  display: inline;
+}
+
+.mobileHeadline {
+  display: none;
+}
+
 .speechBubble {
   flex-shrink: 0;
   align-self: flex-start;
@@ -41,4 +49,33 @@
 
 .bubbleImage {
   display: block;
+}
+
+@media (max-width: 768px) {
+  .heroSection {
+    margin-top: 40px;
+    margin-bottom: 34px;
+  }
+
+  .speechBubble {
+    display: none;
+  }
+
+  .headline {
+    width: 100%;
+    height: auto;
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 110%;
+  }
+
+  .desktopHeadline {
+    display: none;
+  }
+
+  .mobileHeadline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import Header from "@/components/Header/Header";
 import HeroSection from "@/components/HeroSection/HeroSection";
 import CoursesSection from "@/components/CoursesSection/CoursesSection";
@@ -13,6 +13,10 @@ export default function HomeClient() {
   const IS_AUTH_PREVIEW = false;
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+
+  useEffect(() => {
+    document.body.classList.remove("noScroll");
+  }, []);
 
   const handleOpenAuth = useCallback(() => {
     setIsRegisterOpen(false);

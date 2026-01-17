@@ -1,5 +1,5 @@
 .page {
-  padding: 60px 140px 0;
+  padding: 60px var(--page-padding) 0;
 }
 
 .title {
