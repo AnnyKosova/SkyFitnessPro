@@ -137,3 +137,9 @@
   background: rgba(0, 0, 0, 1);
   color: rgba(255, 255, 255, 1);
 }
+
+.startButton:disabled {
+  background: rgba(247, 247, 247, 1);
+  color: rgba(153, 153, 153, 1);
+  cursor: not-allowed;
+}
