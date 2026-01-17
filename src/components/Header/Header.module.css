@@ -1,0 +1,206 @@
+.header {
+  padding-top: 50px;
+  padding-left: 140px;
+  padding-right: 140px;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+}
+
+.logoSection {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  flex-shrink: 0;
+}
+
+.logoLink {
+  display: inline-block;
+}
+
+.logo {
+  display: block;
+}
+
+.tagline {
+  width: 327px;
+  height: 20px;
+  opacity: 0.5;
+  color: rgba(0, 0, 0, 1);
+  font-family: var(--font-roboto);
+  font-style: normal;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 110%;
+  letter-spacing: 0px;
+  text-align: left;
+  margin: 0;
+}
+
+.loginButton {
+  width: 103px;
+  height: 52px;
+  padding: 16px 26px;
+  background: rgba(188, 236, 48, 1);
+  border: none;
+  border-radius: 46px;
+  color: rgba(0, 0, 0, 1);
+  font-family: var(--font-roboto);
+  font-style: normal;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 110%;
+  letter-spacing: 0px;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 730px;
+}
+
+.userButton {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin-left: 698px;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 1);
+}
+
+.userMenuWrapper {
+  position: relative;
+}
+
+.userIcon {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.userName {
+  color: rgba(0, 0, 0, 1);
+  font-family: var(--font-roboto);
+  font-style: normal;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 110%;
+  letter-spacing: 0px;
+  text-align: left;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.userArrow {
+  width: 12px;
+  height: 8px;
+  display: block;
+}
+
+.userMenu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 54px);
+  width: 266px;
+  height: 258px;
+  padding: 30px;
+  box-sizing: border-box;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1000;
+}
+
+.userMenuName {
+  margin: 0;
+  color: rgba(0, 0, 0, 1);
+  font-family: var(--font-roboto);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 110%;
+  letter-spacing: 0px;
+}
+
+.userMenuEmail {
+  margin: 10px 0 34px;
+  color: rgba(153, 153, 153, 1);
+  font-family: var(--font-roboto);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 110%;
+  letter-spacing: 0px;
+}
+
+.userMenuPrimary {
+  width: 206px;
+  height: 52px;
+  padding: 16px 26px;
+  border-radius: 46px;
+  background: rgba(188, 236, 48, 1);
+  font-family: var(--font-roboto);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 110%;
+  color: rgba(0, 0, 0, 1);
+  border: none;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.userMenuPrimary:hover {
+  background: rgba(198, 255, 0, 1);
+}
+
+.userMenuPrimary:active {
+  background: rgba(0, 0, 0, 1);
+  color: rgba(255, 255, 255, 1);
+}
+
+.userMenuSecondary {
+  width: 206px;
+  height: 52px;
+  margin-top: 10px;
+  padding: 16px 26px;
+  border-radius: 46px;
+  background: rgba(255, 255, 255, 1);
+  border: 1px solid rgba(0, 0, 0, 1);
+  font-family: var(--font-roboto);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 110%;
+  color: rgba(0, 0, 0, 1);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.userMenuSecondary:hover {
+  background: rgba(247, 247, 247, 1);
+}
+
+.userMenuSecondary:active {
+  background: rgba(233, 236, 237, 1);
+}
+
+.loginButton:hover {
+  background: rgba(198, 255, 0, 1);
+}
+
+.loginButton:active {
+  background: rgba(0, 0, 0, 1);
+  color: rgba(255, 255, 255, 1);
+}

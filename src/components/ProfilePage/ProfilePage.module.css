@@ -1,0 +1,265 @@
+.page {
+  padding: 60px 140px 0;
+}
+
+.title {
+  margin: 0 0 40px;
+  font-family: var(--font-roboto);
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 110%;
+  color: rgba(0, 0, 0, 1);
+}
+
+.profileCard {
+  background: rgba(255, 255, 255, 1);
+  border-radius: 30px;
+  box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
+  width: 1160px;
+  height: 257px;
+  padding: 30px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 33px;
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 24px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.profileName {
+  margin: 0;
+  font-family: var(--font-roboto);
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 110%;
+  color: rgba(0, 0, 0, 1);
+}
+
+.profileLogin {
+  margin: 30px 0 44px;
+  font-family: var(--font-roboto);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 110%;
+  color: rgba(0, 0, 0, 1);
+}
+
+.logoutButton {
+  width: 192px;
+  height: 52px;
+  padding: 16px 26px;
+  border-radius: 46px;
+  border: 1px solid rgba(0, 0, 0, 1);
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 1);
+  font-family: var(--font-roboto);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 110%;
+  color: rgba(0, 0, 0, 1);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.logoutButton:hover {
+  background: rgba(247, 247, 247, 1);
+}
+
+.logoutButton:active {
+  background: rgba(233, 236, 237, 1);
+}
+
+.coursesSection {
+  margin-top: 60px;
+}
+
+.sectionTitle {
+  margin: 0 0 40px;
+  font-family: var(--font-roboto);
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 110%;
+  color: rgba(0, 0, 0, 1);
+}
+
+.coursesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 360px);
+  gap: 40px;
+  margin-bottom: 280px;
+}
+
+.courseCard {
+  width: 360px;
+  height: 649px;
+  padding: 0 0 15px;
+  background: rgba(255, 255, 255, 1);
+  border-radius: 30px;
+  box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
+  overflow: hidden;
+}
+
+.courseImageWrapper {
+  position: relative;
+}
+
+.courseImage {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.courseRemove {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+}
+
+.courseRemove::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: 40px;
+  right: -6px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 1);
+  border: 1px solid rgba(208, 206, 206, 1);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: var(--font-roboto);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 110%;
+  color: rgba(0, 0, 0, 1);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  z-index: 2;
+}
+
+.courseRemove:hover::after {
+  opacity: 1;
+}
+
+.courseContent {
+  padding: 24px 24px 24px;
+}
+
+.courseTitle {
+  margin: 0 0 20px;
+  font-family: var(--font-roboto);
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 110%;
+  color: rgba(0, 0, 0, 1);
+}
+
+.courseMeta {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.metaItem {
+  font-family: var(--font-roboto);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 110%;
+  color: rgba(32, 32, 32, 1);
+  background: rgba(247, 247, 247, 1);
+  border-radius: 30px;
+  padding: 6px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.metaIcon {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.progressRow {
+  margin-top: 20px;
+}
+
+.progressLabel {
+  display: block;
+  font-family: var(--font-roboto);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 110%;
+  color: rgba(0, 0, 0, 1);
+  margin-bottom: 10px;
+}
+
+.progressBar {
+  width: 100%;
+  height: 4px;
+  background: rgba(217, 217, 217, 1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progressFill {
+  display: block;
+  height: 100%;
+  background: rgba(0, 193, 255, 1);
+}
+
+.courseAction {
+  margin-top: 40px;
+  width: 300px;
+  height: 52px;
+  padding: 16px 26px;
+  border-radius: 46px;
+  background: rgba(188, 236, 48, 1);
+  border: none;
+  font-family: var(--font-roboto);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 110%;
+  color: rgba(0, 0, 0, 1);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.courseAction:hover {
+  background: rgba(198, 255, 0, 1);
+}
+
+.courseAction:active {
+  background: rgba(0, 0, 0, 1);
+  color: rgba(255, 255, 255, 1);
+}

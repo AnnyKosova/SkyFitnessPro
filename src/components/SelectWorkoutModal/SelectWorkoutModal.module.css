@@ -1,0 +1,145 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  width: 460px;
+  height: 609px;
+  padding: 40px;
+  border-radius: 30px;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.title {
+  margin: 0 0 48px;
+  font-family: var(--font-roboto);
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 110%;
+  color: rgba(0, 0, 0, 1);
+}
+
+.listWrapper {
+  position: relative;
+  width: 100%;
+  height: 359px;
+}
+
+.list {
+  height: 359px;
+  overflow-y: auto;
+  padding-right: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scrollbar-width: none;
+}
+
+.list::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(196, 196, 196, 1);
+}
+
+.listItem:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.listIcon {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.listText {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.listTitle {
+  margin: 0;
+  font-family: var(--font-roboto);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 110%;
+  color: rgba(0, 0, 0, 1);
+}
+
+.listSubtitle {
+  margin: 0;
+  font-family: var(--font-roboto);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 110%;
+  color: rgba(0, 0, 0, 1);
+}
+
+.scrollTrack {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 6px;
+  height: 359px;
+  border-radius: 10px;
+  background: rgba(247, 247, 247, 1);
+}
+
+.scrollThumb {
+  display: block;
+  width: 6px;
+  height: 116px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 1);
+}
+
+.startButton {
+  margin-top: 34px;
+  width: 380px;
+  height: 52px;
+  padding: 16px 26px;
+  border-radius: 46px;
+  background: rgba(188, 236, 48, 1);
+  font-family: var(--font-roboto);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 110%;
+  color: rgba(0, 0, 0, 1);
+  border: none;
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.startButton:hover {
+  background: rgba(198, 255, 0, 1);
+}
+
+.startButton:active {
+  background: rgba(0, 0, 0, 1);
+  color: rgba(255, 255, 255, 1);
+}
+
+.startButton:disabled {
+  background: rgba(247, 247, 247, 1);
+  color: rgba(153, 153, 153, 1);
+  cursor: not-allowed;
+}
