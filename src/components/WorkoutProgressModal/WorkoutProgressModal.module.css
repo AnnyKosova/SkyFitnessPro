@@ -1,0 +1,123 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  width: 426px;
+  height: 595.5px;
+  padding: 40px;
+  border-radius: 30px;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
+}
+
+.title {
+  margin: 0 0 48px;
+  font-family: var(--font-roboto);
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 110%;
+  color: rgba(0, 0, 0, 1);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+}
+
+.fieldsWrapper {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-right: 32px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.label {
+  font-family: var(--font-roboto);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 110%;
+  color: rgba(0, 0, 0, 1);
+  text-align: left;
+}
+
+.input {
+  width: 320px;
+  height: 52px;
+  padding: 16px 18px;
+  box-sizing: border-box;
+  border: 1px solid rgba(208, 206, 206, 1);
+  border-radius: 8px;
+  font-family: var(--font-roboto);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 110%;
+  color: rgba(0, 0, 0, 1);
+}
+
+.input::placeholder {
+  color: rgba(208, 206, 206, 1);
+}
+
+.saveButton {
+  width: 346px;
+  height: 52px;
+  padding: 16px 26px;
+  border-radius: 46px;
+  border: none;
+  background: rgba(188, 236, 48, 1);
+  font-family: var(--font-roboto);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 110%;
+  color: rgba(0, 0, 0, 1);
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.saveButton:hover {
+  background: rgba(198, 255, 0, 1);
+}
+
+.saveButton:active {
+  background: rgba(0, 0, 0, 1);
+  color: rgba(255, 255, 255, 1);
+}
+
+.scrollTrack {
+  width: 6px;
+  height: 346px;
+  border-radius: 10px;
+  background: rgba(247, 247, 247, 1);
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.scrollThumb {
+  display: block;
+  width: 6px;
+  height: 116px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 1);
+}

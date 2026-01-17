@@ -1,3 +1,8 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import ProgressModal from "../WorkoutProgressModal/WorkoutProgressModal";
+import WorkoutSuccessModal from "../WorkoutSuccessModal/WorkoutSuccessModal";
 import styles from "./WorkoutPage.module.css";
 
 const exerciseColumns = [
@@ -19,6 +24,20 @@ const exerciseColumns = [
 ];
 
 export default function WorkoutPage() {
+  const [isProgressOpen, setIsProgressOpen] = useState(false);
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
+  const [hasProgressUpdated, setHasProgressUpdated] = useState(false);
+
+  useEffect(() => {
+    if (typeof document === "undefined") {
+      return;
+    }
+    document.body.classList.toggle("noScroll", isProgressOpen || isSuccessOpen);
+    return () => {
+      document.body.classList.remove("noScroll");
+    };
+  }, [isProgressOpen, isSuccessOpen]);
+
   return (
     <main className={styles.page}>
       <h1 className={styles.title}>Йога</h1>
@@ -51,10 +70,25 @@ export default function WorkoutPage() {
             </div>
           ))}
         </div>
-        <button className={styles.progressButton} type="button">
-          Заполнить свой прогресс
+        <button
+          className={styles.progressButton}
+          type="button"
+          onClick={() => setIsProgressOpen(true)}
+        >
+          {hasProgressUpdated ? "Обновить свой прогресс" : "Заполнить свой прогресс"}
         </button>
       </section>
+      {isProgressOpen && (
+        <ProgressModal
+          onClose={() => setIsProgressOpen(false)}
+          onSave={() => {
+            setIsProgressOpen(false);
+            setHasProgressUpdated(true);
+            setIsSuccessOpen(true);
+          }}
+        />
+      )}
+      {isSuccessOpen && <WorkoutSuccessModal onClose={() => setIsSuccessOpen(false)} />}
     </main>
   );
 }
