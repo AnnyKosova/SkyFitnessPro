@@ -354,6 +354,7 @@
     right: -16px;
     height: 220px;
     border-radius: 28px;
+    overflow: visible;
   }
 
   .promoContent {
@@ -383,20 +384,20 @@
     width: 520px;
     height: auto;
     right: -80px;
-    top: -20px;
+    top: -2px;
   }
 
   .promoMan {
     width: 334.1px;
-    height: 347.01px;
-    right: -102px;
-    top: -285px;
+    height: 358.01px;
+    right: -75px;
+    top: -257px;
   }
 
   .promoStrip {
-    width: 40px;
-    height: auto;
-    right: 120px;
-    top: -150px;
+    width: 34px;
+    height: 28px;
+    right: 142px;
+    top: -177px;
   }
 }
