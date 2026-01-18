@@ -33,3 +33,4 @@ export default function WorkoutSuccessModal({ onClose }: WorkoutSuccessModalProp
     </div>
   );
 }
+

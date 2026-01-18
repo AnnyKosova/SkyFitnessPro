@@ -41,3 +41,4 @@ export default function CourseDetailsPage({ params }: { params: { courseId: stri
     />
   );
 }
+

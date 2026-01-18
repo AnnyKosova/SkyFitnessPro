@@ -70,3 +70,4 @@ export default function WorkoutProgressModal({ onClose, onSave }: WorkoutProgres
     </div>
   );
 }
+

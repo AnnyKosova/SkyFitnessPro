@@ -155,3 +155,4 @@ export default function SelectWorkoutModal({ isOpen, onClose }: SelectWorkoutMod
     </div>
   );
 }
+

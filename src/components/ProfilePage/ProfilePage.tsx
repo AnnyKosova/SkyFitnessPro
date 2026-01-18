@@ -129,3 +129,4 @@ export default function ProfilePage({ onSelectWorkout }: ProfilePageProps) {
     </main>
   );
 }
+
