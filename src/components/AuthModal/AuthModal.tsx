@@ -57,7 +57,12 @@ export default function AuthModal({
           {showError && (
             <p className={styles.errorMessage}>
               {errorMessage ? (
-                errorMessage
+                errorMessage.split("\n").map((line, index) => (
+                  <span key={`${line}-${index}`}>
+                    {line}
+                    {index < errorMessage.split("\n").length - 1 && <br />}
+                  </span>
+                ))
               ) : (
                 <>
                   Пароль введен неверно,
@@ -78,4 +83,3 @@ export default function AuthModal({
     </div>
   );
 }
-

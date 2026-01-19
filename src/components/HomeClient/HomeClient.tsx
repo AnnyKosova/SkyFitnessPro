@@ -11,7 +11,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 export default function HomeClient() {
   const { user, isAuthenticated } = useAuth();
   const IS_AUTH_PREVIEW = false;
-  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const IS_AUTH_ERROR_PREVIEW = true;
+  const [isAuthOpen, setIsAuthOpen] = useState(IS_AUTH_ERROR_PREVIEW);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
 
   useEffect(() => {
@@ -59,6 +60,8 @@ export default function HomeClient() {
         isOpen={isAuthOpen}
         onClose={handleCloseAuth}
         onRegisterClick={handleOpenRegister}
+        showError={IS_AUTH_ERROR_PREVIEW}
+        errorMessage={"Пароль введен неверно,\nпопробуйте еще раз."}
       />
       <RegisterModal
         isOpen={isRegisterOpen}
@@ -68,4 +71,3 @@ export default function HomeClient() {
     </>
   );
 }
-
