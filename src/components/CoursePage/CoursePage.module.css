@@ -1,6 +1,7 @@
 .page {
   padding-left: var(--page-padding);
   padding-right: var(--page-padding);
+  padding-bottom: 46px;
 }
 
 .hero {

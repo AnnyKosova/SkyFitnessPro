@@ -11,9 +11,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 export default function HomeClient() {
   const { user, isAuthenticated } = useAuth();
   const IS_AUTH_PREVIEW = false;
-  const IS_AUTH_ERROR_PREVIEW = true;
+  const IS_AUTH_ERROR_PREVIEW = false;
+  const IS_REGISTER_ERROR_PREVIEW = false;
   const [isAuthOpen, setIsAuthOpen] = useState(IS_AUTH_ERROR_PREVIEW);
-  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const [isRegisterOpen, setIsRegisterOpen] = useState(IS_REGISTER_ERROR_PREVIEW);
 
   useEffect(() => {
     document.body.classList.remove("noScroll");
@@ -67,6 +68,7 @@ export default function HomeClient() {
         isOpen={isRegisterOpen}
         onClose={handleCloseRegister}
         onLoginClick={handleOpenAuth}
+        showError={IS_REGISTER_ERROR_PREVIEW}
       />
     </>
   );
