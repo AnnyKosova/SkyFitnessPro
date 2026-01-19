@@ -86,6 +86,15 @@
   height: 6px;
   border-radius: 50px;
   background: rgba(247, 247, 247, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.progressFill {
+  display: block;
+  height: 100%;
+  border-radius: 50px;
+  background: rgba(0, 193, 255, 1);
 }
 
 .progressButton {
@@ -101,7 +110,9 @@
   line-height: 110%;
   color: rgba(0, 0, 0, 1);
   cursor: pointer;
-  transition: background 0.25s ease, color 0.25s ease;
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
 }
 
 .progressButton:hover {
@@ -113,3 +124,93 @@
   color: rgba(255, 255, 255, 1);
 }
 
+.progressButtonTextMobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+
+  .title {
+    margin-bottom: 24px;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 110%;
+  }
+
+  .videoSection {
+    margin-bottom: 24px;
+  }
+
+  .videoFrame {
+    width: 343px;
+    height: 189px;
+    border-radius: 8.87px;
+  }
+
+  .exerciseCard {
+    width: 343px;
+    height: auto;
+    padding: 30px;
+  }
+
+  .exerciseTitle {
+    margin-bottom: 20px;
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 110%;
+  }
+
+  .exerciseGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  .exerciseColumn {
+    display: contents;
+  }
+
+  .exerciseItem {
+    margin-bottom: 0;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 110%;
+  }
+
+  .exerciseLine {
+    width: 283px;
+    height: 6px;
+    border-radius: 50px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progressFill {
+    display: block;
+    height: 100%;
+    border-radius: 50px;
+    background: rgba(0, 193, 255, 1);
+  }
+
+  .progressButton {
+    width: 283px;
+    height: 52px;
+    border-radius: 46px;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 110%;
+  }
+
+  .progressButtonTextDesktop {
+    display: none;
+  }
+
+  .progressButtonTextMobile {
+    display: inline;
+  }
+}
