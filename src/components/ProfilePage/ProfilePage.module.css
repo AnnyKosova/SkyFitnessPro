@@ -346,6 +346,33 @@
     padding: 24px 24px 15px;
   }
 
+  .metaItem {
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  .metaIcon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .courseMeta .metaItem {
+    height: 38px;
+  }
+
+  .courseMeta .metaItem:first-child {
+    width: 103px;
+  }
+
+  .courseMeta .metaItem:last-child {
+    width: 163px;
+  }
+
+  .courseContent > .metaItem {
+    width: 129px;
+    height: 38px;
+  }
+
   .scrollToTopWrapper {
     display: block !important;
   }
