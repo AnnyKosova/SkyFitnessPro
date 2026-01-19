@@ -19,7 +19,7 @@ export default function CoursePageClient({
   heroImageSrcMobile,
 }: CoursePageClientProps) {
   const { user, isAuthenticated } = useAuth();
-  const IS_AUTH_PREVIEW = false;
+  const IS_AUTH_PREVIEW = true;
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
 
