@@ -1,24 +1,27 @@
 "use client";
 
-import AuthModal from "@/components/AuthModal/AuthModal";
-import CoursesSection from "@/components/CoursesSection/CoursesSection";
+import { useCallback, useMemo, useState } from "react";
 import Header from "@/components/Header/Header";
-import HeroSection from "@/components/HeroSection/HeroSection";
+import AuthModal from "@/components/AuthModal/AuthModal";
 import RegisterModal from "@/components/RegisterModal/RegisterModal";
 import { useAuth } from "@/context/AuthContext";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import CoursePage from "./CoursePage";
 
-export default function HomeClient() {
+type CoursePageClientProps = {
+  title: string;
+  heroImageSrc: string;
+  heroImageSrcMobile?: string;
+};
+
+export default function CoursePageClient({
+  title,
+  heroImageSrc,
+  heroImageSrcMobile,
+}: CoursePageClientProps) {
   const { user, isAuthenticated } = useAuth();
-  const IS_AUTH_PREVIEW = false;
-  const IS_AUTH_ERROR_PREVIEW = false;
-  const IS_REGISTER_ERROR_PREVIEW = false;
-  const [isAuthOpen, setIsAuthOpen] = useState(IS_AUTH_ERROR_PREVIEW);
-  const [isRegisterOpen, setIsRegisterOpen] = useState(IS_REGISTER_ERROR_PREVIEW);
-
-  useEffect(() => {
-    document.body.classList.remove("noScroll");
-  }, []);
+  const IS_AUTH_PREVIEW = true;
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
 
   const handleOpenAuth = useCallback(() => {
     setIsRegisterOpen(false);
@@ -53,23 +56,18 @@ export default function HomeClient() {
         isAuthenticated={IS_AUTH_PREVIEW || isAuthenticated}
         userName={userName}
       />
-      <main>
-        <HeroSection />
-        <CoursesSection />
-      </main>
-      <AuthModal
-        isOpen={isAuthOpen}
-        onClose={handleCloseAuth}
-        onRegisterClick={handleOpenRegister}
-        showError={IS_AUTH_ERROR_PREVIEW}
-        errorMessage={"Пароль введен неверно,\nпопробуйте еще раз."}
+      <CoursePage
+        title={title}
+        heroImageSrc={heroImageSrc}
+        heroImageSrcMobile={heroImageSrcMobile}
       />
+      <AuthModal isOpen={isAuthOpen} onClose={handleCloseAuth} onRegisterClick={handleOpenRegister} />
       <RegisterModal
         isOpen={isRegisterOpen}
         onClose={handleCloseRegister}
         onLoginClick={handleOpenAuth}
-        showError={IS_REGISTER_ERROR_PREVIEW}
       />
     </>
   );
 }
+

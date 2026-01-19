@@ -1,29 +1,62 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import styles from "./CoursePage.module.css";
 
 const suitabilityItems = [
-  <>
-    Давно хотели
-    <br />
-    попробовать йогу,
-    <br />
-    но не решались начать
-  </>,
-  <>
-    Хотите укрепить
-    <br />
-    позвоночник, избавиться
-    <br />
-    от болей в спине и суставах
-  </>,
-  <>
-    Ищете активность,
-    <br />
-    полезную для тела
-    <br />и души
-  </>,
+  {
+    desktop: (
+      <>
+        Давно хотели
+        <br />
+        попробовать йогу,
+        <br />
+        но не решались начать
+      </>
+    ),
+    mobile: (
+      <>
+        <span>Давно хотели попробовать</span>
+        <span>йогу, но не решались начать</span>
+      </>
+    ),
+  },
+  {
+    desktop: (
+      <>
+        Хотите укрепить
+        <br />
+        позвоночник, избавиться
+        <br />
+        от болей в спине и суставах
+      </>
+    ),
+    mobile: (
+      <>
+        <span>Хотите укрепить</span>
+        <span>позвоночник, избавиться</span>
+        <span>от болей в спине</span>
+        <span>и суставах</span>
+      </>
+    ),
+  },
+  {
+    desktop: (
+      <>
+        Ищете активность,
+        <br />
+        полезную для тела
+        <br />и души
+      </>
+    ),
+    mobile: (
+      <>
+        <span>Ищете активность,</span>
+        <span>полезную для тела и души</span>
+      </>
+    ),
+  },
 ];
 
 const directions = [
@@ -46,14 +79,25 @@ const benefits = [
 type CoursePageProps = {
   title: string;
   heroImageSrc: string;
+  heroImageSrcMobile?: string;
 };
 
-export default function CoursePage({ title, heroImageSrc }: CoursePageProps) {
+export default function CoursePage({ title, heroImageSrc, heroImageSrcMobile }: CoursePageProps) {
+  const mobileSrc = heroImageSrcMobile ?? heroImageSrc;
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const update = () => setIsMobile(window.innerWidth <= 768);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
   return (
     <main className={styles.page}>
       <section className={styles.hero}>
         <Image
-          src={heroImageSrc}
+          src={isMobile ? mobileSrc : heroImageSrc}
           alt={title}
           fill
           className={styles.heroImageAsset}
@@ -65,9 +109,23 @@ export default function CoursePage({ title, heroImageSrc }: CoursePageProps) {
         <h2 className={styles.sectionTitle}>Подойдет для вас, если:</h2>
         <div className={styles.suitabilityCards}>
           {suitabilityItems.map((item, index) => (
-            <div className={styles.suitabilityCard} key={`suitability-${index}`}>
-              <span className={styles.suitabilityNumber}>{index + 1}</span>
-              <p className={styles.suitabilityText}>{item}</p>
+            <div
+              className={`${styles.suitabilityCard} ${
+                index === 1 ? styles.suitabilityCardTight : ""
+              }`}
+              key={`suitability-${index}`}
+            >
+              <span
+                className={`${styles.suitabilityNumber} ${
+                  index === 0 ? styles.suitabilityNumberCompact : ""
+                }`}
+              >
+                {index + 1}
+              </span>
+              <p className={styles.suitabilityText}>
+                <span className={styles.suitabilityTextDesktop}>{item.desktop}</span>
+                <span className={styles.suitabilityTextMobile}>{item.mobile}</span>
+              </p>
             </div>
           ))}
         </div>
@@ -91,21 +149,42 @@ export default function CoursePage({ title, heroImageSrc }: CoursePageProps) {
         </div>
       </section>
 
-      <section className={styles.promo}>
-        <div className={styles.promoSwooshClip}>
-          <Image
-            src="/images/courses/course-swoosh.png"
-            alt=""
-            width={739}
-            height={526}
-            className={styles.promoSwoosh}
-          />
+      <section className={styles.promoWrapper}>
+        <div className={styles.promoDecor}>
+          <div className={styles.promoSwooshClip}>
+            <Image
+              src="/images/courses/course-swoosh.png"
+              alt=""
+              width={739}
+              height={526}
+              className={styles.promoSwoosh}
+            />
+          </div>
+          <div className={styles.promoImage}>
+            <Image
+              src="/images/courses/BlackStrip.png"
+              alt=""
+              width={54}
+              height={47}
+              className={styles.promoStrip}
+            />
+            <Image
+              src="/images/courses/course-man.png"
+              alt="Спортсмен"
+              width={515}
+              height={568}
+              className={styles.promoMan}
+              priority
+            />
+          </div>
         </div>
+      </section>
+
+      <section className={styles.promo}>
         <div className={styles.promoContent}>
           <h2 className={styles.promoTitle}>
             Начните путь
-            <br />
-            к новому телу
+            <br />к новому телу
           </h2>
           <ul className={styles.promoList}>
             {benefits.map((benefit) => (
@@ -117,23 +196,6 @@ export default function CoursePage({ title, heroImageSrc }: CoursePageProps) {
           <button className={styles.promoButton} type="button">
             Войдите, чтобы добавить курс
           </button>
-        </div>
-        <div className={styles.promoImage}>
-          <Image
-            src="/images/courses/BlackStrip.png"
-            alt=""
-            width={54}
-            height={47}
-            className={styles.promoStrip}
-          />
-          <Image
-            src="/images/courses/course-man.png"
-            alt="Спортсмен"
-            width={515}
-            height={568}
-            className={styles.promoMan}
-            priority
-          />
         </div>
       </section>
     </main>

@@ -141,3 +141,41 @@
   flex-shrink: 0;
   display: block;
 }
+
+@media (max-width: 768px) {
+  .card {
+    width: 343px;
+    height: 492px;
+  }
+
+  .imageWrapper {
+    width: 343px;
+    height: 325px;
+  }
+
+  .image {
+    width: 343px;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .addButton {
+    width: 32px;
+    height: 32px;
+  }
+
+  .plusIcon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .content {
+    padding-top: 24px;
+  }
+
+  .title {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+}
+

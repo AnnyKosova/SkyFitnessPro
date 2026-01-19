@@ -7,7 +7,7 @@ import styles from "./WorkoutPage.module.css";
 
 const exerciseColumns = [
   [
-    { name: "Наклоны вперед", progress: 0 },
+    { name: "Наклоны вперед", progress: 40 },
     { name: "Наклоны назад", progress: 0 },
     { name: "Поднятие ног, согнутых в коленях", progress: 0 },
   ],
@@ -64,7 +64,12 @@ export default function WorkoutPage() {
                   <span className={styles.exerciseText}>
                     {exercise.name} {exercise.progress}%
                   </span>
-                  <span className={styles.exerciseLine} />
+                  <span className={styles.exerciseLine}>
+                    <span
+                      className={styles.progressFill}
+                      style={{ width: `${exercise.progress}%` }}
+                    />
+                  </span>
                 </div>
               ))}
             </div>
@@ -75,7 +80,10 @@ export default function WorkoutPage() {
           type="button"
           onClick={() => setIsProgressOpen(true)}
         >
-          {hasProgressUpdated ? "Обновить свой прогресс" : "Заполнить свой прогресс"}
+          <span className={styles.progressButtonTextDesktop}>
+            {hasProgressUpdated ? "Обновить свой прогресс" : "Заполнить свой прогресс"}
+          </span>
+          <span className={styles.progressButtonTextMobile}>Обновить свой прогресс</span>
         </button>
       </section>
       {isProgressOpen && (

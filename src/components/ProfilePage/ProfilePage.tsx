@@ -1,3 +1,4 @@
+import ScrollToTopButton from "@/components/CoursesSection/ScrollToTopButton";
 import Image from "next/image";
 import styles from "./ProfilePage.module.css";
 
@@ -124,6 +125,9 @@ export default function ProfilePage({ onSelectWorkout }: ProfilePageProps) {
               </div>
             </article>
           ))}
+        </div>
+        <div className={styles.scrollToTopWrapper}>
+          <ScrollToTopButton />
         </div>
       </section>
     </main>

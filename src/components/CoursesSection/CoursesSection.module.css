@@ -1,6 +1,6 @@
 .coursesSection {
-  padding-left: 140px;
-  padding-right: 140px;
+  padding-left: var(--page-padding);
+  padding-right: var(--page-padding);
   margin-top: 50px;
   padding-bottom: 81px;
 }
@@ -62,4 +62,27 @@
 
 .scrollToTopButton:active {
   opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .coursesSection {
+    margin-top: 0;
+    padding-bottom: 29px;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .container > :nth-child(4),
+  .container > :nth-child(5) {
+    grid-column: auto;
+  }
+
+  .scrollToTopButton {
+    margin-top: 24px;
+    margin-left: auto;
+  }
 }

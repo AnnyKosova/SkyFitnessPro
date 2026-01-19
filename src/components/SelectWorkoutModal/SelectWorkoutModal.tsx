@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./SelectWorkoutModal.module.css";
 
 type WorkoutItem = {
@@ -21,8 +21,8 @@ const workouts: WorkoutItem[] = [
   },
   {
     id: "2",
-    title: "Красота и здоровье",
-    subtitle: "Йога на каждый день / 2 день",
+    title: "Асаны стоя",
+    subtitle: "Йога на каждый день / 3 день",
     checked: false,
   },
   {
@@ -39,8 +39,14 @@ const workouts: WorkoutItem[] = [
   },
   {
     id: "5",
-    title: "Гибкость спины",
-    subtitle: "Йога на каждый день / 5 день",
+    title: "Растягиваем мышцы бедра",
+    subtitle: "Йога на каждый день / 4 день",
+    checked: false,
+  },
+  {
+    id: "6",
+    title: "Растягиваем мышцы бедра",
+    subtitle: "Йога на каждый день / 4 день",
     checked: false,
   },
 ];
@@ -52,9 +58,9 @@ type SelectWorkoutModalProps = {
 
 export default function SelectWorkoutModal({ isOpen, onClose }: SelectWorkoutModalProps) {
   const router = useRouter();
-  const listRef = useRef<HTMLDivElement>(null);
+  const [items, setItems] = useState<WorkoutItem[]>(workouts);
   const [thumbOffset, setThumbOffset] = useState(0);
-  const [items, setItems] = useState(workouts);
+  const listRef = useRef<HTMLDivElement>(null);
 
   const updateThumb = useCallback(() => {
     const list = listRef.current;
@@ -66,8 +72,9 @@ export default function SelectWorkoutModal({ isOpen, onClose }: SelectWorkoutMod
       setThumbOffset(0);
       return;
     }
-    const trackHeight = 359;
-    const thumbHeight = 116;
+    const isMobile = window.innerWidth <= 768;
+    const trackHeight = isMobile ? 335 : 359;
+    const thumbHeight = isMobile ? 80 : 116;
     const maxThumb = trackHeight - thumbHeight;
     const ratio = list.scrollTop / maxScroll;
     setThumbOffset(Math.round(maxThumb * ratio));
@@ -77,67 +84,84 @@ export default function SelectWorkoutModal({ isOpen, onClose }: SelectWorkoutMod
     if (!isOpen) {
       return;
     }
+
     const list = listRef.current;
     if (!list) {
       return;
     }
-    const handleScroll = () => updateThumb();
-    list.addEventListener("scroll", handleScroll);
+
     updateThumb();
-    return () => list.removeEventListener("scroll", handleScroll);
+    list.addEventListener("scroll", updateThumb);
+
+    return () => {
+      list.removeEventListener("scroll", updateThumb);
+    };
   }, [isOpen, updateThumb]);
 
-  const toggleItem = useCallback((id: string) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add("noScroll");
+    } else {
+      document.body.classList.remove("noScroll");
+    }
+
+    return () => {
+      document.body.classList.remove("noScroll");
+    };
+  }, [isOpen]);
+
+  const handleToggle = (id: string) => {
     setItems((prev) =>
       prev.map((item) => (item.id === id ? { ...item, checked: !item.checked } : item))
     );
-  }, []);
+  };
 
-  const handleStart = useCallback(() => {
-    const selected = items.find((item) => item.checked);
-    if (!selected) {
-      return;
+  const handleStart = () => {
+    const selectedWorkout = items.find((item) => item.checked);
+    if (selectedWorkout) {
+      onClose();
+      router.push(`/workouts/${selectedWorkout.id}`);
     }
-    router.push(`/workouts/${selected.id}`);
-  }, [items, router]);
+  };
 
   if (!isOpen) {
     return null;
   }
 
   return (
-    <div className={styles.overlay} onClick={onClose} role="dialog" aria-modal="true">
-      <div className={styles.modal} onClick={(event) => event.stopPropagation()}>
+    <div className={styles.overlay} onClick={onClose}>
+      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <h2 className={styles.title}>Выберите тренировку</h2>
         <div className={styles.listWrapper}>
-          <div className={styles.list} role="list" onScroll={updateThumb} ref={listRef}>
-            {items.map((workout) => (
-              <div
-                key={workout.title}
-                className={styles.listItem}
-                role="listitem"
-                onClick={() => toggleItem(workout.id)}
-              >
-                <Image
-                  src={
-                    workout.checked
-                      ? "/images/courses/Check-in-Circle.png"
-                      : "/images/courses/Check-in-Circle-No.png"
-                  }
-                  alt=""
-                  width={24}
-                  height={24}
+          <div className={styles.list} ref={listRef}>
+            {items.map((item) => (
+              <div key={item.id} className={styles.listItem}>
+                <button
+                  type="button"
                   className={styles.listIcon}
-                />
+                  onClick={() => handleToggle(item.id)}
+                  aria-label={item.checked ? "Снять выбор" : "Выбрать"}
+                >
+                  <Image
+                    src={
+                      item.checked
+                        ? "/images/courses/Check-in-Circle.png"
+                        : "/images/courses/Check-in-Circle-No.png"
+                    }
+                    alt={item.checked ? "Выбрано" : "Не выбрано"}
+                    width={24}
+                    height={24}
+                  />
+                </button>
                 <div className={styles.listText}>
-                  <p className={styles.listTitle}>{workout.title}</p>
-                  <p className={styles.listSubtitle}>{workout.subtitle}</p>
+                  <h3 className={styles.listTitle}>{item.title}</h3>
+                  <p className={styles.listSubtitle}>{item.subtitle}</p>
                 </div>
               </div>
             ))}
           </div>
           <div className={styles.scrollTrack}>
-            <span
+            <div
               className={styles.scrollThumb}
               style={{ transform: `translateY(${thumbOffset}px)` }}
             />

@@ -1,7 +1,7 @@
 .header {
   padding-top: 50px;
-  padding-left: 140px;
-  padding-right: 140px;
+  padding-left: var(--page-padding);
+  padding-right: var(--page-padding);
 }
 
 .container {
@@ -204,3 +204,40 @@
   background: rgba(0, 0, 0, 1);
   color: rgba(255, 255, 255, 1);
 }
+
+@media (max-width: 768px) {
+  .header {
+    padding-top: 40px;
+  }
+
+  .container {
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+  }
+
+  .tagline {
+    display: none;
+  }
+
+  .loginButton {
+    width: 83px;
+    height: 36px;
+    padding: 8px 16px;
+    margin-left: 0;
+  }
+
+  .userButton {
+    margin-left: 0;
+  }
+
+  .userName {
+    display: none;
+  }
+
+  .userIcon {
+    width: 36px;
+    height: 36px;
+  }
+}
+
