@@ -144,3 +144,60 @@
   cursor: not-allowed;
 }
 
+@media (max-width: 768px) {
+  .overlay {
+    padding: 16px;
+    align-items: flex-start;
+    padding-top: 40px;
+  }
+
+  .modal {
+    width: 343px;
+    height: 585px;
+    padding: 30px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+  }
+
+  .title {
+    font-size: 32px;
+    font-weight: 400;
+    margin-bottom: 34px;
+  }
+
+  .listWrapper {
+    height: 335px;
+  }
+
+  .list {
+    height: 335px;
+  }
+
+  .listItem {
+    height: 80px;
+  }
+
+  .listTitle {
+    font-size: 18px;
+    font-weight: 400;
+  }
+
+  .listSubtitle {
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  .scrollTrack {
+    height: 335px;
+  }
+
+  .scrollThumb {
+    height: 80px;
+  }
+
+  .startButton {
+    width: 283px;
+    height: 52px;
+    padding: 16px 26px;
+  }
+}
