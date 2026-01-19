@@ -264,3 +264,95 @@
   color: rgba(255, 255, 255, 1);
 }
 
+.scrollToTopWrapper {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding-top: 40px;
+  }
+
+  .title {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 24px;
+  }
+
+  .profileCard {
+    width: 343px;
+    height: 365px;
+    padding: 30px;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .avatar {
+    width: 141px;
+    height: 141px;
+  }
+
+  .profileInfo {
+    margin-top: 30px;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .profileName {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    text-align: left;
+  }
+
+  .profileLogin {
+    margin: 0 0 20px;
+  }
+
+  .logoutButton {
+    width: 283px;
+    height: 50px;
+  }
+
+  .coursesGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .courseCard {
+    width: 100%;
+  }
+
+  .coursesSection {
+    margin-top: 24px;
+    padding-bottom: 40px;
+  }
+
+  .sectionTitle {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 24px;
+  }
+
+  .courseImage {
+    width: 343px;
+    height: 325px;
+  }
+
+  .courseContent {
+    padding: 24px 24px 15px;
+  }
+
+  .scrollToTopWrapper {
+    display: block !important;
+  }
+
+  .scrollToTopWrapper :global(.scrollToTopButton) {
+    margin-top: 24px;
+    margin-bottom: 40px;
+    margin-left: auto;
+  }
+}
