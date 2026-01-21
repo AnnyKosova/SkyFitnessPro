@@ -1,5 +1,7 @@
 "use client";
 
+import { coursesApi } from "@/api/fitness";
+import type { CourseWorkout } from "@/types/api";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -12,53 +14,23 @@ type WorkoutItem = {
   checked: boolean;
 };
 
-const workouts: WorkoutItem[] = [
-  {
-    id: "1",
-    title: "Утренняя практика",
-    subtitle: "Йога на каждый день / 1 день",
-    checked: false,
-  },
-  {
-    id: "2",
-    title: "Асаны стоя",
-    subtitle: "Йога на каждый день / 3 день",
-    checked: false,
-  },
-  {
-    id: "3",
-    title: "Асаны стоя",
-    subtitle: "Йога на каждый день / 3 день",
-    checked: false,
-  },
-  {
-    id: "4",
-    title: "Растягиваем мышцы бедра",
-    subtitle: "Йога на каждый день / 4 день",
-    checked: false,
-  },
-  {
-    id: "5",
-    title: "Растягиваем мышцы бедра",
-    subtitle: "Йога на каждый день / 4 день",
-    checked: false,
-  },
-  {
-    id: "6",
-    title: "Растягиваем мышцы бедра",
-    subtitle: "Йога на каждый день / 4 день",
-    checked: false,
-  },
-];
-
 type SelectWorkoutModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  courseId?: string | null;
 };
 
-export default function SelectWorkoutModal({ isOpen, onClose }: SelectWorkoutModalProps) {
+const mapWorkouts = (workouts: CourseWorkout[]): WorkoutItem[] =>
+  workouts.map((workout, index) => ({
+    id: workout._id,
+    title: workout.name,
+    subtitle: `Урок ${index + 1}`,
+    checked: false,
+  }));
+
+export default function SelectWorkoutModal({ isOpen, onClose, courseId }: SelectWorkoutModalProps) {
   const router = useRouter();
-  const [items, setItems] = useState<WorkoutItem[]>(workouts);
+  const [items, setItems] = useState<WorkoutItem[]>([]);
   const [thumbOffset, setThumbOffset] = useState(0);
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -97,6 +69,31 @@ export default function SelectWorkoutModal({ isOpen, onClose }: SelectWorkoutMod
       list.removeEventListener("scroll", updateThumb);
     };
   }, [isOpen, updateThumb]);
+
+  useEffect(() => {
+    if (!isOpen || !courseId) {
+      setItems([]);
+      return;
+    }
+
+    let isMounted = true;
+    const loadWorkouts = async () => {
+      try {
+        const data = await coursesApi.getWorkouts(courseId);
+        if (isMounted) {
+          setItems(mapWorkouts(data));
+        }
+      } catch {
+        if (isMounted) {
+          setItems([]);
+        }
+      }
+    };
+    loadWorkouts();
+    return () => {
+      isMounted = false;
+    };
+  }, [courseId, isOpen]);
 
   useEffect(() => {
     if (isOpen) {

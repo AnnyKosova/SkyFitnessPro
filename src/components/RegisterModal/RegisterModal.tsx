@@ -9,6 +9,8 @@ type RegisterModalProps = {
   onLoginClick?: () => void;
   showError?: boolean;
   errorMessage?: string;
+  isSubmitting?: boolean;
+  onSubmit?: (data: { email: string; password: string; passwordRepeat: string }) => void;
 };
 
 export default function RegisterModal({
@@ -17,6 +19,8 @@ export default function RegisterModal({
   onLoginClick,
   showError = false,
   errorMessage,
+  isSubmitting = false,
+  onSubmit,
 }: RegisterModalProps) {
   if (!isOpen) {
     return null;
@@ -39,7 +43,17 @@ export default function RegisterModal({
           className={styles.logo}
           priority
         />
-        <form className={styles.form} onSubmit={(event) => event.preventDefault()}>
+        <form
+          className={styles.form}
+          onSubmit={(event) => {
+            event.preventDefault();
+            const formData = new FormData(event.currentTarget);
+            const email = String(formData.get("email") || "").trim();
+            const password = String(formData.get("password") || "");
+            const passwordRepeat = String(formData.get("passwordRepeat") || "");
+            onSubmit?.({ email, password, passwordRepeat });
+          }}
+        >
           <input
             className={emailInputClassName}
             type="email"
@@ -64,7 +78,12 @@ export default function RegisterModal({
           {showError && (
             <p className={styles.errorMessage}>
               {errorMessage ? (
-                errorMessage
+                errorMessage.split("\n").map((line, index) => (
+                  <span key={`${line}-${index}`}>
+                    {line}
+                    {index < errorMessage.split("\n").length - 1 && <br />}
+                  </span>
+                ))
               ) : (
                 <>
                   Данная почта уже используется.
@@ -74,7 +93,7 @@ export default function RegisterModal({
               )}
             </p>
           )}
-          <button className={primaryButtonClassName} type="button">
+          <button className={primaryButtonClassName} type="submit" disabled={isSubmitting}>
             Зарегистрироваться
           </button>
           <button className={styles.secondaryButton} type="button" onClick={onLoginClick}>
@@ -85,4 +104,3 @@ export default function RegisterModal({
     </div>
   );
 }
-

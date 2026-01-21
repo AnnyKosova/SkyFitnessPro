@@ -1,35 +1,21 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styles from "./WorkoutProgressModal.module.css";
 
 type WorkoutProgressModalProps = {
   onClose: () => void;
-  onSave: () => void;
+  onSave: (progressData: number[]) => void;
+  exercises: { name: string; quantity: number; _id: string }[];
+  initialProgressData?: number[];
 };
 
-const fields = [
-  {
-    id: "forward",
-    label: "Сколько раз вы сделали наклоны вперед?",
-    defaultValue: "20",
-    placeholder: "0",
-  },
-  {
-    id: "backward",
-    label: "Сколько раз вы сделали наклоны назад?",
-    defaultValue: "",
-    placeholder: "0",
-  },
-  {
-    id: "legs",
-    label: "Сколько раз вы сделали поднятие ног, согнутых в коленях?",
-    defaultValue: "",
-    placeholder: "0",
-  },
-];
-
-export default function WorkoutProgressModal({ onClose, onSave }: WorkoutProgressModalProps) {
+export default function WorkoutProgressModal({
+  onClose,
+  onSave,
+  exercises,
+  initialProgressData,
+}: WorkoutProgressModalProps) {
   const handleOverlayClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       if (event.target === event.currentTarget) {
@@ -39,6 +25,29 @@ export default function WorkoutProgressModal({ onClose, onSave }: WorkoutProgres
     [onClose]
   );
 
+  const [values, setValues] = useState<string[]>([]);
+
+  useEffect(() => {
+    setValues(
+      exercises.map((_, index) => {
+        const value = initialProgressData?.[index];
+        return value !== undefined && value !== null ? String(value) : "";
+      })
+    );
+  }, [exercises, initialProgressData]);
+
+  const handleChange = useCallback((index: number, value: string) => {
+    setValues((prev) => prev.map((item, i) => (i === index ? value : item)));
+  }, []);
+
+  const handleSave = useCallback(() => {
+    const progressData = values.map((value) => {
+      const numeric = Number(value);
+      return Number.isFinite(numeric) ? Math.max(0, numeric) : 0;
+    });
+    onSave(progressData);
+  }, [onSave, values]);
+
   return (
     <div className={styles.overlay} onClick={handleOverlayClick}>
       <div className={styles.modal}>
@@ -46,14 +55,15 @@ export default function WorkoutProgressModal({ onClose, onSave }: WorkoutProgres
         <form className={styles.form}>
           <div className={styles.fieldsWrapper}>
             <div className={styles.fields}>
-              {fields.map((field) => (
-                <label className={styles.field} key={field.id}>
-                  <span className={styles.label}>{field.label}</span>
+              {exercises.map((exercise, index) => (
+                <label className={styles.field} key={exercise._id}>
+                  <span className={styles.label}>Сколько раз вы сделали {exercise.name}?</span>
                   <input
                     className={styles.input}
                     type="text"
-                    defaultValue={field.defaultValue}
-                    placeholder={field.placeholder}
+                    value={values[index] ?? ""}
+                    placeholder="0"
+                    onChange={(event) => handleChange(index, event.target.value)}
                   />
                 </label>
               ))}
@@ -62,7 +72,7 @@ export default function WorkoutProgressModal({ onClose, onSave }: WorkoutProgres
               <span className={styles.scrollThumb} />
             </div>
           </div>
-          <button className={styles.saveButton} type="button" onClick={onSave}>
+          <button className={styles.saveButton} type="button" onClick={handleSave}>
             Сохранить
           </button>
         </form>
@@ -70,4 +80,3 @@ export default function WorkoutProgressModal({ onClose, onSave }: WorkoutProgres
     </div>
   );
 }
-

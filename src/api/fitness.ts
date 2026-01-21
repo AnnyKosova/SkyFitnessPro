@@ -1,67 +1,81 @@
-import { apiClient } from "./client";
 import type {
-  RegisterRequest,
-  RegisterResponse,
+  AddCourseRequest,
+  ApiError,
+  Course,
+  CourseProgress,
+  CourseWorkout,
   LoginRequest,
   LoginResponse,
-  User,
-  Course,
-  CourseWorkout,
-  Workout,
-  CourseProgress,
+  RegisterRequest,
+  RegisterResponse,
   SingleWorkoutProgress,
-  AddCourseRequest,
-  UpdateProgressRequest,
   SuccessMessageResponse,
-  ApiError,
+  UpdateProgressRequest,
+  User,
+  Workout,
 } from "@/types/api";
+import { apiClient } from "./client";
+
+const postPlain = async <T>(url: string, data: unknown): Promise<T> => {
+  const response = await apiClient.getClient().post<T>(url, JSON.stringify(data), {
+    headers: {
+      "Content-Type": "text/plain",
+    },
+  });
+  return response.data;
+};
+
+const patchPlain = async <T>(url: string, data: unknown): Promise<T> => {
+  const response = await apiClient.getClient().patch<T>(url, JSON.stringify(data), {
+    headers: {
+      "Content-Type": "text/plain",
+    },
+  });
+  return response.data;
+};
 
 // Auth API
 export const authApi = {
   register: async (data: RegisterRequest): Promise<RegisterResponse> => {
-    const response = await apiClient.getClient().post<RegisterResponse>(
-      "/auth/register",
-      data
-    );
-    return response.data;
+    return postPlain<RegisterResponse>("/auth/register", data);
   },
 
   login: async (data: LoginRequest): Promise<LoginResponse> => {
-    const response = await apiClient.getClient().post<LoginResponse>("/auth/login", data);
-    const { token } = response.data;
+    const response = await postPlain<LoginResponse>("/auth/login", data);
+    const { token } = response;
     if (typeof window !== "undefined") {
       localStorage.setItem("token", token);
     }
-    return response.data;
+    return response;
   },
 };
 
 // User API
 export const userApi = {
   getMe: async (): Promise<User> => {
-    const response = await apiClient.getClient().get<User>("/users/me");
-    return response.data;
+    const response = await apiClient.getClient().get<User | { user: User }>("/users/me");
+    const data = response.data as User | { user: User };
+    if (typeof data === "object" && data !== null && "user" in data) {
+      return (data as { user: User }).user;
+    }
+    return data as User;
   },
 
   addCourse: async (data: AddCourseRequest): Promise<SuccessMessageResponse> => {
-    const response = await apiClient.getClient().post<SuccessMessageResponse>(
-      "/users/me/courses",
-      data
-    );
-    return response.data;
+    return postPlain<SuccessMessageResponse>("/users/me/courses", data);
   },
 
   removeCourse: async (courseId: string): Promise<SuccessMessageResponse> => {
-    const response = await apiClient.getClient().delete<SuccessMessageResponse>(
-      `/users/me/courses/${courseId}`
-    );
+    const response = await apiClient
+      .getClient()
+      .delete<SuccessMessageResponse>(`/users/me/courses/${courseId}`);
     return response.data;
   },
 
   getCourseProgress: async (courseId: string): Promise<CourseProgress> => {
-    const response = await apiClient.getClient().get<CourseProgress>(
-      `/users/me/progress?courseId=${courseId}`
-    );
+    const response = await apiClient
+      .getClient()
+      .get<CourseProgress>(`/users/me/progress?courseId=${courseId}`);
     return response.data;
   },
 
@@ -69,9 +83,9 @@ export const userApi = {
     courseId: string,
     workoutId: string
   ): Promise<SingleWorkoutProgress> => {
-    const response = await apiClient.getClient().get<SingleWorkoutProgress>(
-      `/users/me/progress?courseId=${courseId}&workoutId=${workoutId}`
-    );
+    const response = await apiClient
+      .getClient()
+      .get<SingleWorkoutProgress>(`/users/me/progress?courseId=${courseId}&workoutId=${workoutId}`);
     return response.data;
   },
 };
@@ -89,16 +103,16 @@ export const coursesApi = {
   },
 
   getWorkouts: async (courseId: string): Promise<CourseWorkout[]> => {
-    const response = await apiClient.getClient().get<CourseWorkout[]>(
-      `/courses/${courseId}/workouts`
-    );
+    const response = await apiClient
+      .getClient()
+      .get<CourseWorkout[]>(`/courses/${courseId}/workouts`);
     return response.data;
   },
 
   resetProgress: async (courseId: string): Promise<SuccessMessageResponse> => {
-    const response = await apiClient.getClient().patch<SuccessMessageResponse>(
-      `/courses/${courseId}/reset`
-    );
+    const response = await apiClient
+      .getClient()
+      .patch<SuccessMessageResponse>(`/courses/${courseId}/reset`);
     return response.data;
   },
 };
@@ -115,20 +129,13 @@ export const workoutsApi = {
     workoutId: string,
     data: UpdateProgressRequest
   ): Promise<SuccessMessageResponse> => {
-    const response = await apiClient.getClient().patch<SuccessMessageResponse>(
-      `/courses/${courseId}/workouts/${workoutId}`,
-      data
-    );
-    return response.data;
+    return patchPlain<SuccessMessageResponse>(`/courses/${courseId}/workouts/${workoutId}`, data);
   },
 
-  resetProgress: async (
-    courseId: string,
-    workoutId: string
-  ): Promise<SuccessMessageResponse> => {
-    const response = await apiClient.getClient().patch<SuccessMessageResponse>(
-      `/courses/${courseId}/workouts/${workoutId}/reset`
-    );
+  resetProgress: async (courseId: string, workoutId: string): Promise<SuccessMessageResponse> => {
+    const response = await apiClient
+      .getClient()
+      .patch<SuccessMessageResponse>(`/courses/${courseId}/workouts/${workoutId}/reset`);
     return response.data;
   },
 };

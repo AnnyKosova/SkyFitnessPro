@@ -1,5 +1,5 @@
-import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from "axios";
 import type { ApiError } from "@/types/api";
+import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from "axios";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "/api/fitness";
 
@@ -10,9 +10,7 @@ class ApiClient {
   constructor() {
     this.client = axios.create({
       baseURL: API_BASE_URL,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      timeout: 15000,
     });
 
     this.setupInterceptors();
@@ -28,9 +26,7 @@ class ApiClient {
         }
         return config;
       },
-      (error: AxiosError) => {
-        return Promise.reject(error);
-      }
+      (error: AxiosError) => Promise.reject(error)
     );
 
     // Response interceptor - обрабатывает ошибки и обновляет токен
@@ -41,12 +37,10 @@ class ApiClient {
           _retry?: boolean;
         };
 
-        // Если ошибка 401 и запрос еще не повторялся
         if (error.response?.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
 
           try {
-            // Пытаемся обновить токен
             const newToken = await this.refreshToken();
             if (newToken) {
               this.setToken(newToken);
@@ -56,7 +50,6 @@ class ApiClient {
               return this.client(originalRequest);
             }
           } catch (refreshError) {
-            // Если обновление токена не удалось, очищаем токен
             this.clearToken();
             return Promise.reject(refreshError);
           }
@@ -83,25 +76,19 @@ class ApiClient {
   }
 
   private async refreshToken(): Promise<string | null> {
-    // Если уже есть запрос на обновление токена, ждем его
     if (this.refreshTokenPromise) {
       return this.refreshTokenPromise;
     }
 
-    // Создаем новый запрос на обновление токена
     this.refreshTokenPromise = (async () => {
       try {
         const token = this.getToken();
         if (!token) {
           return null;
         }
-
-        // Если API предоставляет endpoint для обновления токена, используйте его здесь
-        // Например: POST /api/fitness/auth/refresh с текущим токеном
-        // Пока что возвращаем null, что приведет к редиректу на логин
-        // TODO: Если API предоставляет refresh endpoint, реализовать его здесь
+        // TODO: Реальный refresh endpoint пока неизвестен
         return null;
-      } catch (error) {
+      } catch {
         return null;
       } finally {
         this.refreshTokenPromise = null;
