@@ -126,7 +126,9 @@
   color: rgba(0, 0, 0, 1);
   border: none;
   cursor: pointer;
-  transition: background 0.25s ease, color 0.25s ease;
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
 }
 
 .startButton:hover {
@@ -174,17 +176,21 @@
   }
 
   .listItem {
-    height: 80px;
+    height: auto;
+    align-items: flex-start;
+    padding-bottom: 12px;
   }
 
   .listTitle {
     font-size: 18px;
     font-weight: 400;
+    line-height: 120%;
   }
 
   .listSubtitle {
     font-size: 14px;
     font-weight: 400;
+    line-height: 120%;
   }
 
   .scrollTrack {
