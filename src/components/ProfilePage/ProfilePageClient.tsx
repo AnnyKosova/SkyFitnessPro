@@ -5,7 +5,7 @@ import SelectWorkoutModal from "@/components/SelectWorkoutModal/SelectWorkoutMod
 import { useAuth } from "@/context/AuthContext";
 import type { Course, CourseProgress } from "@/types/api";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ProfilePage, { ProfileCourse } from "./ProfilePage";
 
 const courseImages: Record<string, string> = {
@@ -22,6 +22,8 @@ const slugOverrides: Record<string, string> = {
   fitness: "fitness",
   "step-aerobics": "step-aerobics",
   stepaerobics: "step-aerobics",
+  stepaerobic: "step-aerobics",
+  stepairobic: "step-aerobics",
   "step-aerobika": "step-aerobics",
   bodyflex: "bodyflex",
   бодифлекс: "bodyflex",
@@ -41,9 +43,12 @@ const toSlug = (value: string) => {
 
 const getProgressPercent = (course: Course, progress: CourseProgress | null) => {
   if (!progress) return 0;
-  const totalWorkouts = course.workouts?.length ?? progress.workoutsProgress.length ?? 0;
+  const workoutsProgress = Array.isArray(progress.workoutsProgress)
+    ? progress.workoutsProgress
+    : [];
+  const totalWorkouts = course.workouts?.length ?? workoutsProgress.length ?? 0;
   if (!totalWorkouts) return 0;
-  const completed = progress.workoutsProgress.filter((item) => item.workoutCompleted).length;
+  const completed = workoutsProgress.filter((item) => item.workoutCompleted).length;
   return Math.round((completed / totalWorkouts) * 100);
 };
 
@@ -79,6 +84,7 @@ export default function ProfilePageClient() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [isRemoving, setIsRemoving] = useState(false);
+  const lastLoadKeyRef = useRef<string | null>(null);
 
   const openModal = useCallback((courseId: string) => {
     setSelectedCourseId(courseId);
@@ -112,24 +118,47 @@ export default function ProfilePageClient() {
   );
 
   useEffect(() => {
-    if (!isAuthenticated || !user?.selectedCourses) {
+    if (isLoading) {
+      return;
+    }
+    if (!isAuthenticated || !user) {
       setCourses(null);
       return;
     }
-    if (user.selectedCourses.length === 0) {
+    const courseIds = user.selectedCourses ?? [];
+    if (courseIds.length === 0) {
       setCourses([]);
       return;
     }
+
+    const loadKey = `${user.email ?? "user"}:${courseIds.join(",")}`;
+    if (lastLoadKeyRef.current === loadKey && courses !== null) {
+      return;
+    }
+    lastLoadKeyRef.current = loadKey;
 
     let isMounted = true;
 
     const loadCourses = async () => {
       try {
         const allCourses = await coursesApi.getAll();
-        const selected = allCourses.filter((course) => user.selectedCourses.includes(course._id));
+        const courseMap = new Map(allCourses.map((course) => [course._id, course]));
+        const selected = courseIds
+          .map((courseId) => courseMap.get(courseId))
+          .filter((course): course is Course => Boolean(course));
+        const orderedSelected =
+          selected.length > 0
+            ? selected
+            : allCourses
+                .filter((course) => user.selectedCourses.includes(course._id))
+                .sort((a, b) => {
+                  const orderA = a.order ?? 0;
+                  const orderB = b.order ?? 0;
+                  return orderA - orderB;
+                });
 
         const mapped = await Promise.all(
-          selected.map(async (course) => {
+          orderedSelected.map(async (course) => {
             let progress: CourseProgress | null = null;
             try {
               progress = await userApi.getCourseProgress(course._id);
@@ -140,7 +169,6 @@ export default function ProfilePageClient() {
             return buildCourse(course, progressPercent);
           })
         );
-
         if (isMounted) {
           setCourses(mapped);
         }
@@ -156,10 +184,14 @@ export default function ProfilePageClient() {
     return () => {
       isMounted = false;
     };
-  }, [isAuthenticated, user?.selectedCourses]);
+  }, [isAuthenticated, isLoading, user]);
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    if (isLoading) {
+      return;
+    }
+    const hasToken = typeof window !== "undefined" && Boolean(localStorage.getItem("token"));
+    if (!isAuthenticated && !hasToken) {
       router.replace("/?auth=1");
     }
   }, [isAuthenticated, isLoading, router]);
@@ -178,7 +210,7 @@ export default function ProfilePageClient() {
         onSelectWorkout={openModal}
         onRemoveCourse={handleRemoveCourse}
         onLogout={logout}
-        courses={courses ?? undefined}
+        courses={courses ?? []}
         userName={userName}
         userEmail={user?.email}
       />

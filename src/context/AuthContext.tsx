@@ -1,9 +1,9 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
-import { authApi, userApi, getErrorMessage } from "@/api/fitness";
-import type { User, LoginRequest, RegisterRequest } from "@/types/api";
 import { apiClient } from "@/api/client";
+import { authApi, getErrorMessage, userApi } from "@/api/fitness";
+import type { LoginRequest, RegisterRequest, User } from "@/types/api";
+import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 
 interface AuthContextType {
   user: User | null;
@@ -33,9 +33,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const userData = await userApi.getMe();
       setUser(userData);
     } catch (error) {
-      setUser(null);
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("token");
+      const status =
+        typeof error === "object" &&
+        error !== null &&
+        "response" in error &&
+        typeof (error as { response?: { status?: number } }).response?.status === "number"
+          ? (error as { response?: { status?: number } }).response?.status
+          : null;
+      if (status === 401) {
+        setUser(null);
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("token");
+        }
       }
     } finally {
       setIsLoading(false);
@@ -56,26 +65,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [refreshUser]);
 
-  const login = useCallback(async (data: LoginRequest) => {
-    try {
-      await authApi.login(data);
-      await refreshUser();
-    } catch (error) {
-      const message = getErrorMessage(error);
-      throw new Error(message);
-    }
-  }, [refreshUser]);
+  const login = useCallback(
+    async (data: LoginRequest) => {
+      try {
+        await authApi.login(data);
+        await refreshUser();
+      } catch (error) {
+        const message = getErrorMessage(error);
+        throw new Error(message);
+      }
+    },
+    [refreshUser]
+  );
 
-  const register = useCallback(async (data: RegisterRequest) => {
-    try {
-      await authApi.register(data);
-      // После регистрации автоматически логинимся
-      await login({ email: data.email, password: data.password });
-    } catch (error) {
-      const message = getErrorMessage(error);
-      throw new Error(message);
-    }
-  }, [login]);
+  const register = useCallback(
+    async (data: RegisterRequest) => {
+      try {
+        await authApi.register(data);
+        // После регистрации автоматически логинимся
+        await login({ email: data.email, password: data.password });
+      } catch (error) {
+        const message = getErrorMessage(error);
+        throw new Error(message);
+      }
+    },
+    [login]
+  );
 
   const logout = useCallback(() => {
     apiClient.clearAuth();
