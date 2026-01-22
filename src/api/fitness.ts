@@ -44,7 +44,7 @@ export const authApi = {
     const response = await postPlain<LoginResponse>("/auth/login", data);
     const { token } = response;
     if (typeof window !== "undefined") {
-      localStorage.setItem("token", token);
+      apiClient.setAuthToken(token);
     }
     return response;
   },

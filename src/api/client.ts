@@ -5,7 +5,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "/api/fitness";
 
 class ApiClient {
   private client: AxiosInstance;
-  private refreshTokenPromise: Promise<string> | null = null;
+  private refreshTokenPromise: Promise<string | null> | null = null;
 
   constructor() {
     this.client = axios.create({
@@ -68,11 +68,13 @@ class ApiClient {
   private setToken(token: string): void {
     if (typeof window === "undefined") return;
     localStorage.setItem("token", token);
+    this.client.defaults.headers.common.Authorization = `Bearer ${token}`;
   }
 
   private clearToken(): void {
     if (typeof window === "undefined") return;
     localStorage.removeItem("token");
+    delete this.client.defaults.headers.common.Authorization;
   }
 
   private async refreshToken(): Promise<string | null> {
@@ -104,6 +106,10 @@ class ApiClient {
 
   public clearAuth(): void {
     this.clearToken();
+  }
+
+  public setAuthToken(token: string): void {
+    this.setToken(token);
   }
 }
 

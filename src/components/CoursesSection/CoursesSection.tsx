@@ -1,13 +1,24 @@
 "use client";
 
-import { coursesApi } from "@/api/fitness";
+import { coursesApi, userApi } from "@/api/fitness";
+import { useAuth } from "@/context/AuthContext";
 import type { Course } from "@/types/api";
 import { useEffect, useMemo, useState } from "react";
 import CourseCard from "./CourseCard/CourseCard";
 import styles from "./CoursesSection.module.css";
 import ScrollToTopButton from "./ScrollToTopButton";
 
-const defaultCourses = [
+type CourseCardData = {
+  id: string;
+  apiId?: string;
+  name: string;
+  image: string;
+  days: number;
+  duration: string;
+  difficulty: string;
+};
+
+const defaultCourses: CourseCardData[] = [
   {
     id: "yoga",
     name: "Йога",
@@ -81,7 +92,7 @@ const normalizeName = (value: string) =>
     .replace(/[^a-zа-я0-9]+/gi, " ")
     .trim();
 
-const mapCourse = (course: Course) => {
+const mapCourse = (course: Course): CourseCardData => {
   const baseName = course.nameRU || course.nameEN;
   const normalized = normalizeName(baseName);
   const normalizedEn = normalizeName(course.nameEN ?? "");
@@ -103,6 +114,7 @@ const mapCourse = (course: Course) => {
 
   return {
     id: slug,
+    apiId: course._id,
     name: course.nameRU,
     image: courseImages[slug] ?? courseImages.yoga,
     days: course.durationInDays ?? 25,
@@ -111,8 +123,14 @@ const mapCourse = (course: Course) => {
   };
 };
 
-export default function CoursesSection() {
+type CoursesSectionProps = {
+  onLoginClick?: () => void;
+};
+
+export default function CoursesSection({ onLoginClick }: CoursesSectionProps) {
+  const { isAuthenticated, refreshUser, user } = useAuth();
   const [courses, setCourses] = useState(defaultCourses);
+  const [isAdding, setIsAdding] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -142,11 +160,45 @@ export default function CoursesSection() {
     return ordered.length ? ordered : courses;
   }, [courses]);
 
+  const apiIdBySlug = useMemo(() => {
+    const entries = courses
+      .map((course) => [course.id, course.apiId] as const)
+      .filter(([, apiId]) => Boolean(apiId));
+    return new Map(entries);
+  }, [courses]);
+
+  const handleAddCourse = async (courseId?: string, slug?: string) => {
+    const hasToken = typeof window !== "undefined" && Boolean(localStorage.getItem("token"));
+    if (!isAuthenticated && !hasToken) {
+      onLoginClick?.();
+      return;
+    }
+    const resolvedId = courseId ?? (slug ? apiIdBySlug.get(slug) : undefined);
+    if (!resolvedId) {
+      return;
+    }
+    if (user?.selectedCourses?.includes(resolvedId)) {
+      return;
+    }
+    if (isAdding) {
+      return;
+    }
+    try {
+      setIsAdding(true);
+      await userApi.addCourse({ courseId: resolvedId });
+      await refreshUser();
+    } catch {
+      // Ошибка от API не влияет на верстку, ничего не показываем
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
   return (
     <section className={styles.coursesSection}>
       <div className={styles.container}>
         {visibleCourses.map((course) => (
-          <CourseCard key={course.id} course={course} />
+          <CourseCard key={course.id} course={course} onAddCourse={handleAddCourse} />
         ))}
       </div>
       <ScrollToTopButton />

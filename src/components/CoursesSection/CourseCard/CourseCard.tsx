@@ -5,15 +5,17 @@ import styles from "./CourseCard.module.css";
 interface CourseCardProps {
   course: {
     id: string;
+    apiId?: string;
     name: string;
     image: string;
     days: number;
     duration: string;
     difficulty: string;
   };
+  onAddCourse?: (courseId?: string, slug?: string) => void;
 }
 
-export default function CourseCard({ course }: CourseCardProps) {
+export default function CourseCard({ course, onAddCourse }: CourseCardProps) {
   return (
     <Link href={`/courses/${course.id}`} className={styles.card}>
       <div className={styles.imageWrapper}>
@@ -28,7 +30,11 @@ export default function CourseCard({ course }: CourseCardProps) {
           className={styles.addButton}
           aria-label="Добавить курс"
           type="button"
-          onClick={(event) => event.preventDefault()}
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            onAddCourse?.(course.apiId, course.id);
+          }}
         >
           <Image
             src="/images/icons/Add-in-Circle.svg"
@@ -79,4 +85,3 @@ export default function CourseCard({ course }: CourseCardProps) {
     </Link>
   );
 }
-
