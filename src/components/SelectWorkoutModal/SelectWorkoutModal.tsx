@@ -31,6 +31,7 @@ const mapWorkouts = (workouts: CourseWorkout[]): WorkoutItem[] =>
 export default function SelectWorkoutModal({ isOpen, onClose, courseId }: SelectWorkoutModalProps) {
   const router = useRouter();
   const [items, setItems] = useState<WorkoutItem[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [thumbOffset, setThumbOffset] = useState(0);
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -73,12 +74,14 @@ export default function SelectWorkoutModal({ isOpen, onClose, courseId }: Select
   useEffect(() => {
     if (!isOpen || !courseId) {
       setItems([]);
+      setIsLoading(false);
       return;
     }
 
     let isMounted = true;
     const loadWorkouts = async () => {
       try {
+        setIsLoading(true);
         const data = await coursesApi.getWorkouts(courseId);
         if (isMounted) {
           setItems(mapWorkouts(data));
@@ -86,6 +89,10 @@ export default function SelectWorkoutModal({ isOpen, onClose, courseId }: Select
       } catch {
         if (isMounted) {
           setItems([]);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
         }
       }
     };
@@ -131,31 +138,37 @@ export default function SelectWorkoutModal({ isOpen, onClose, courseId }: Select
         <h2 className={styles.title}>Выберите тренировку</h2>
         <div className={styles.listWrapper}>
           <div className={styles.list} ref={listRef}>
-            {items.map((item) => (
-              <div key={item.id} className={styles.listItem}>
-                <button
-                  type="button"
-                  className={styles.listIcon}
-                  onClick={() => handleToggle(item.id)}
-                  aria-label={item.checked ? "Снять выбор" : "Выбрать"}
-                >
-                  <Image
-                    src={
-                      item.checked
-                        ? "/images/courses/Check-in-Circle.png"
-                        : "/images/courses/Check-in-Circle-No.png"
-                    }
-                    alt={item.checked ? "Выбрано" : "Не выбрано"}
-                    width={24}
-                    height={24}
-                  />
-                </button>
-                <div className={styles.listText}>
-                  <h3 className={styles.listTitle}>{item.title}</h3>
-                  <p className={styles.listSubtitle}>{item.subtitle}</p>
+            {isLoading ? (
+              <div className={styles.listState}>Загрузка...</div>
+            ) : items.length === 0 ? (
+              <div className={styles.listState}>Нет доступных тренировок</div>
+            ) : (
+              items.map((item) => (
+                <div key={item.id} className={styles.listItem}>
+                  <button
+                    type="button"
+                    className={styles.listIcon}
+                    onClick={() => handleToggle(item.id)}
+                    aria-label={item.checked ? "Снять выбор" : "Выбрать"}
+                  >
+                    <Image
+                      src={
+                        item.checked
+                          ? "/images/courses/Check-in-Circle.png"
+                          : "/images/courses/Check-in-Circle-No.png"
+                      }
+                      alt={item.checked ? "Выбрано" : "Не выбрано"}
+                      width={24}
+                      height={24}
+                    />
+                  </button>
+                  <div className={styles.listText}>
+                    <h3 className={styles.listTitle}>{item.title}</h3>
+                    <p className={styles.listSubtitle}>{item.subtitle}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
           <div className={styles.scrollTrack}>
             <div
@@ -168,7 +181,7 @@ export default function SelectWorkoutModal({ isOpen, onClose, courseId }: Select
           className={styles.startButton}
           type="button"
           onClick={handleStart}
-          disabled={!items.some((item) => item.checked)}
+          disabled={isLoading || !items.some((item) => item.checked)}
         >
           Начать
         </button>
