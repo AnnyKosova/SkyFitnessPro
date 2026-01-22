@@ -10,6 +10,31 @@ import { validateEmail, validatePassword, validatePasswordMatch } from "@/utils/
 import { useCallback, useEffect, useMemo, useState } from "react";
 import CoursePage from "./CoursePage";
 
+const slugOverrides: Record<string, string> = {
+  yoga: "yoga",
+  stretching: "stretching",
+  fitness: "fitness",
+  "step-aerobics": "step-aerobics",
+  stepaerobics: "step-aerobics",
+  stepaerobic: "step-aerobics",
+  stepairobic: "step-aerobics",
+  "step-aerobika": "step-aerobics",
+  bodyflex: "bodyflex",
+  бодифлекс: "bodyflex",
+  "степ-аэробика": "step-aerobics",
+  стретчинг: "stretching",
+  йога: "yoga",
+  фитнес: "fitness",
+};
+
+const toSlug = (value: string) => {
+  const normalized = value
+    .toLowerCase()
+    .replace(/[^a-zа-я0-9]+/gi, "-")
+    .replace(/^-+|-+$/g, "");
+  return slugOverrides[normalized] ?? normalized;
+};
+
 type CoursePageClientProps = {
   courseId: string;
   title: string;
@@ -38,12 +63,9 @@ export default function CoursePageClient({
       try {
         const allCourses = await coursesApi.getAll();
         const match = allCourses.find((item) => {
-          const name = item.nameEN || item.nameRU;
-          const normalized = name
-            .toLowerCase()
-            .replace(/[^a-zа-я0-9]+/gi, "-")
-            .replace(/^-+|-+$/g, "");
-          return normalized === courseId;
+          const name = item.nameEN || item.nameRU || "";
+          const slug = toSlug(name);
+          return slug === courseId;
         });
         if (!match) {
           return;
@@ -158,6 +180,8 @@ export default function CoursePageClient({
         heroImageSrcMobile={heroImageSrcMobile}
         directions={course?.directions}
         fitting={course?.fitting}
+        onLoginClick={handleOpenAuth}
+        isAuthenticated={isAuthenticated}
       />
       <AuthModal
         isOpen={isAuthOpen}

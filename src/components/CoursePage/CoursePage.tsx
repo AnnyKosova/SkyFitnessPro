@@ -82,6 +82,8 @@ type CoursePageProps = {
   heroImageSrcMobile?: string;
   directions?: string[];
   fitting?: string[];
+  onLoginClick?: () => void;
+  isAuthenticated?: boolean;
 };
 
 export default function CoursePage({
@@ -90,6 +92,8 @@ export default function CoursePage({
   heroImageSrcMobile,
   directions,
   fitting,
+  onLoginClick,
+  isAuthenticated,
 }: CoursePageProps) {
   const mobileSrc = heroImageSrcMobile ?? heroImageSrc;
   const [isMobile, setIsMobile] = useState(false);
@@ -211,7 +215,7 @@ export default function CoursePage({
               </li>
             ))}
           </ul>
-          <button className={styles.promoButton} type="button">
+          <button className={styles.promoButton} type="button" onClick={onLoginClick}>
             Войдите, чтобы добавить курс
           </button>
         </div>
