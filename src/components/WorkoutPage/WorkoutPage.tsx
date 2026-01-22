@@ -1,6 +1,7 @@
 "use client";
 
 import { coursesApi, userApi, workoutsApi } from "@/api/fitness";
+import Header from "@/components/Header/Header";
 import { useAuth } from "@/context/AuthContext";
 import type { Course, SingleWorkoutProgress, Workout } from "@/types/api";
 import { useRouter } from "next/navigation";
@@ -29,7 +30,7 @@ const buildColumns = (items: ExerciseProgressItem[]) => {
 };
 
 export default function WorkoutPage({ workoutId }: WorkoutPageProps) {
-  const { isAuthenticated, isLoading, logout } = useAuth();
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
   const router = useRouter();
   const [isProgressOpen, setIsProgressOpen] = useState(false);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
@@ -148,64 +149,81 @@ export default function WorkoutPage({ workoutId }: WorkoutPageProps) {
     [course, logout, router, workoutId]
   );
 
+  const userName = useMemo(() => {
+    if (!user?.email) {
+      return "";
+    }
+    const name = user.email.split("@")[0];
+    return name || "";
+  }, [user?.email]);
+
   return (
-    <main className={styles.page}>
-      <h1 className={styles.title}>{course?.nameRU ?? "Тренировка"}</h1>
+    <>
+      <Header
+        isAuthenticated={isAuthenticated}
+        userName={userName}
+        userEmail={user?.email}
+        onLogout={logout}
+        hideTagline
+      />
+      <main className={styles.page}>
+        <h1 className={styles.title}>{course?.nameRU ?? "Тренировка"}</h1>
 
-      <section className={styles.videoSection}>
-        <div className={styles.videoFrame}>
-          <iframe
-            className={styles.video}
-            src={workout?.video ?? "about:blank"}
-            title={workout?.name ?? "Тренировка"}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
+        <section className={styles.videoSection}>
+          <div className={styles.videoFrame}>
+            <iframe
+              className={styles.video}
+              src={workout?.video ?? "about:blank"}
+              title={workout?.name ?? "Тренировка"}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </section>
+
+        <section className={styles.exerciseCard}>
+          <h2 className={styles.exerciseTitle}>Упражнения тренировки {workoutNumber}</h2>
+          <div className={styles.exerciseGrid}>
+            {exerciseColumns.map((column, columnIndex) => (
+              <div className={styles.exerciseColumn} key={`column-${columnIndex}`}>
+                {column.map((exercise, index) => (
+                  <div className={styles.exerciseItem} key={`${exercise.id}-${index}`}>
+                    <span className={styles.exerciseText}>
+                      {exercise.name} {exercise.progress}%
+                    </span>
+                    <span className={styles.exerciseLine}>
+                      <span
+                        className={styles.progressFill}
+                        style={{ width: `${exercise.progress}%` }}
+                      />
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+          <button
+            className={styles.progressButton}
+            type="button"
+            onClick={() => setIsProgressOpen(true)}
+            disabled={isLoadingData || !workout}
+          >
+            <span className={styles.progressButtonTextDesktop}>
+              {hasProgressUpdated ? "Обновить свой прогресс" : "Заполнить свой прогресс"}
+            </span>
+            <span className={styles.progressButtonTextMobile}>Обновить свой прогресс</span>
+          </button>
+        </section>
+        {isProgressOpen && workout && (
+          <ProgressModal
+            onClose={() => setIsProgressOpen(false)}
+            onSave={handleSaveProgress}
+            exercises={workout.exercises}
+            initialProgressData={progress?.progressData}
           />
-        </div>
-      </section>
-
-      <section className={styles.exerciseCard}>
-        <h2 className={styles.exerciseTitle}>Упражнения тренировки {workoutNumber}</h2>
-        <div className={styles.exerciseGrid}>
-          {exerciseColumns.map((column, columnIndex) => (
-            <div className={styles.exerciseColumn} key={`column-${columnIndex}`}>
-              {column.map((exercise, index) => (
-                <div className={styles.exerciseItem} key={`${exercise.id}-${index}`}>
-                  <span className={styles.exerciseText}>
-                    {exercise.name} {exercise.progress}%
-                  </span>
-                  <span className={styles.exerciseLine}>
-                    <span
-                      className={styles.progressFill}
-                      style={{ width: `${exercise.progress}%` }}
-                    />
-                  </span>
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-        <button
-          className={styles.progressButton}
-          type="button"
-          onClick={() => setIsProgressOpen(true)}
-          disabled={isLoadingData || !workout}
-        >
-          <span className={styles.progressButtonTextDesktop}>
-            {hasProgressUpdated ? "Обновить свой прогресс" : "Заполнить свой прогресс"}
-          </span>
-          <span className={styles.progressButtonTextMobile}>Обновить свой прогресс</span>
-        </button>
-      </section>
-      {isProgressOpen && workout && (
-        <ProgressModal
-          onClose={() => setIsProgressOpen(false)}
-          onSave={handleSaveProgress}
-          exercises={workout.exercises}
-          initialProgressData={progress?.progressData}
-        />
-      )}
-      {isSuccessOpen && <WorkoutSuccessModal onClose={() => setIsSuccessOpen(false)} />}
-    </main>
+        )}
+        {isSuccessOpen && <WorkoutSuccessModal onClose={() => setIsSuccessOpen(false)} />}
+      </main>
+    </>
   );
 }
