@@ -61,7 +61,8 @@ export default function ProfilePage({
   userEmail,
 }: ProfilePageProps) {
   const profileName = userName ?? "Сергей";
-  const profileLogin = userEmail ? `Логин: ${userEmail}` : "Логин: sergey.petrov96";
+  const profileLogin =
+    userEmail === undefined ? "Логин: sergey.petrov96" : userEmail ? `Логин: ${userEmail}` : "";
 
   return (
     <main className={styles.page}>
@@ -79,7 +80,7 @@ export default function ProfilePage({
         </div>
         <div className={styles.profileInfo}>
           <p className={styles.profileName}>{profileName}</p>
-          <p className={styles.profileLogin}>{profileLogin}</p>
+          {profileLogin ? <p className={styles.profileLogin}>{profileLogin}</p> : null}
           <button className={styles.logoutButton} type="button" onClick={onLogout}>
             Выйти
           </button>

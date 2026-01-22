@@ -11,7 +11,7 @@ import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 export default function HomeClient() {
-  const { user, isAuthenticated, login, register } = useAuth();
+  const { user, isAuthenticated, login, register, logout } = useAuth();
   const IS_AUTH_PREVIEW = false;
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
@@ -104,10 +104,10 @@ export default function HomeClient() {
 
   const userName = useMemo(() => {
     if (!user?.email) {
-      return "Сергей";
+      return "";
     }
     const name = user.email.split("@")[0];
-    return name || "Сергей";
+    return name || "";
   }, [user?.email]);
 
   return (
@@ -116,10 +116,12 @@ export default function HomeClient() {
         onLoginClick={handleOpenAuth}
         isAuthenticated={IS_AUTH_PREVIEW || isAuthenticated}
         userName={userName}
+        userEmail={user?.email}
+        onLogout={logout}
       />
       <main>
         <HeroSection />
-        <CoursesSection />
+        <CoursesSection onLoginClick={handleOpenAuth} />
       </main>
       <AuthModal
         isOpen={isAuthOpen}

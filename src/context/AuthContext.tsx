@@ -3,7 +3,7 @@
 import { apiClient } from "@/api/client";
 import { authApi, getErrorMessage, userApi } from "@/api/fitness";
 import type { LoginRequest, RegisterRequest, User } from "@/types/api";
-import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 
 interface AuthContextType {
   user: User | null;
@@ -20,6 +20,27 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const retryCountRef = useRef(0);
+
+  const loadCachedUser = () => {
+    if (typeof window === "undefined") return null;
+    const raw = localStorage.getItem("user");
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw) as User;
+    } catch {
+      return null;
+    }
+  };
+
+  const saveCachedUser = (value: User | null) => {
+    if (typeof window === "undefined") return;
+    if (!value) {
+      localStorage.removeItem("user");
+      return;
+    }
+    localStorage.setItem("user", JSON.stringify(value));
+  };
 
   const refreshUser = useCallback(async () => {
     try {
@@ -32,6 +53,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       const userData = await userApi.getMe();
       setUser(userData);
+      saveCachedUser(userData);
     } catch (error) {
       const status =
         typeof error === "object" &&
@@ -45,6 +67,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (typeof window !== "undefined") {
           localStorage.removeItem("token");
         }
+        saveCachedUser(null);
+      } else if (retryCountRef.current < 1) {
+        retryCountRef.current += 1;
+        if (typeof window !== "undefined") {
+          window.setTimeout(() => {
+            refreshUser();
+          }, 800);
+        }
       }
     } finally {
       setIsLoading(false);
@@ -56,6 +86,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("token");
       if (token) {
+        const cached = loadCachedUser();
+        if (cached) {
+          setUser(cached);
+        }
         refreshUser();
       } else {
         setIsLoading(false);
@@ -95,6 +129,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = useCallback(() => {
     apiClient.clearAuth();
     setUser(null);
+    saveCachedUser(null);
     if (typeof window !== "undefined") {
       window.location.href = "/";
     }

@@ -10,6 +10,8 @@ type HeaderProps = {
   onLoginClick?: () => void;
   isAuthenticated?: boolean;
   userName?: string;
+  userEmail?: string;
+  onLogout?: () => void;
   forceMenuOpen?: boolean;
   hideTagline?: boolean;
 };
@@ -18,6 +20,8 @@ export default function Header({
   onLoginClick,
   isAuthenticated,
   userName,
+  userEmail,
+  onLogout,
   forceMenuOpen,
   hideTagline,
 }: HeaderProps) {
@@ -40,8 +44,14 @@ export default function Header({
 
   const handleLogoutClick = useCallback(() => {
     setIsMenuOpen(false);
+    if (onLogout) {
+      onLogout();
+      return;
+    }
     router.push("/");
-  }, [router]);
+  }, [onLogout, router]);
+
+  const displayName = userName || (userEmail ? userEmail.split("@")[0] : "");
 
   return (
     <header className={styles.header}>
@@ -69,7 +79,11 @@ export default function Header({
                 height={24}
                 className={styles.userIcon}
               />
-              <span className={styles.userName}>{userName ?? "Сергей"}</span>
+              {displayName ? (
+                <span className={styles.userName}>{displayName}</span>
+              ) : (
+                <span className={styles.userName} />
+              )}
               <Image
                 src="/images/icons/Down.svg"
                 alt=""
@@ -80,8 +94,8 @@ export default function Header({
             </button>
             {isMenuVisible && (
               <div className={styles.userMenu}>
-                <p className={styles.userMenuName}>{userName ?? "Сергей"}</p>
-                <p className={styles.userMenuEmail}>sergey.petrov96@mail.ru</p>
+                {displayName ? <p className={styles.userMenuName}>{displayName}</p> : null}
+                {userEmail ? <p className={styles.userMenuEmail}>{userEmail}</p> : null}
                 <button
                   className={styles.userMenuPrimary}
                   type="button"
@@ -108,4 +122,3 @@ export default function Header({
     </header>
   );
 }
-

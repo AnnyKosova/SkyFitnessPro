@@ -23,7 +23,7 @@ export default function CoursePageClient({
   heroImageSrc,
   heroImageSrcMobile,
 }: CoursePageClientProps) {
-  const { user, isAuthenticated, login, register } = useAuth();
+  const { user, isAuthenticated, login, register, logout } = useAuth();
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
@@ -137,15 +137,21 @@ export default function CoursePageClient({
 
   const userName = useMemo(() => {
     if (!user?.email) {
-      return "Сергей";
+      return "";
     }
     const name = user.email.split("@")[0];
-    return name || "Сергей";
+    return name || "";
   }, [user?.email]);
 
   return (
     <>
-      <Header onLoginClick={handleOpenAuth} isAuthenticated={isAuthenticated} userName={userName} />
+      <Header
+        onLoginClick={handleOpenAuth}
+        isAuthenticated={isAuthenticated}
+        userName={userName}
+        userEmail={user?.email}
+        onLogout={logout}
+      />
       <CoursePage
         title={course?.nameRU ?? title}
         heroImageSrc={heroImageSrc}

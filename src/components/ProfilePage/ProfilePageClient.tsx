@@ -77,6 +77,45 @@ const buildCourse = (course: Course, progressPercent: number): ProfileCourse => 
   };
 };
 
+const getProfileCoursesCacheKey = (email?: string) =>
+  email ? `profileCourses:${email}` : "profileCourses";
+
+const loadCachedCourses = (email?: string) => {
+  if (typeof window === "undefined") return null;
+  const raw = localStorage.getItem(getProfileCoursesCacheKey(email));
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as ProfileCourse[];
+    return Array.isArray(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+};
+
+const saveCachedCourses = (email: string | undefined, courses: ProfileCourse[]) => {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(getProfileCoursesCacheKey(email), JSON.stringify(courses));
+};
+
+const ALL_COURSES_CACHE_KEY = "allCourses";
+
+const loadCachedAllCourses = () => {
+  if (typeof window === "undefined") return null;
+  const raw = localStorage.getItem(ALL_COURSES_CACHE_KEY);
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as Course[];
+    return Array.isArray(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+};
+
+const saveCachedAllCourses = (courses: Course[]) => {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(ALL_COURSES_CACHE_KEY, JSON.stringify(courses));
+};
+
 export default function ProfilePageClient() {
   const { user, isAuthenticated, isLoading, refreshUser, logout } = useAuth();
   const router = useRouter();
@@ -131,6 +170,11 @@ export default function ProfilePageClient() {
       return;
     }
 
+    const cachedProfile = courses === null ? loadCachedCourses(user.email) : null;
+    if (cachedProfile) {
+      setCourses(cachedProfile);
+    }
+
     const loadKey = `${user.email ?? "user"}:${courseIds.join(",")}`;
     if (lastLoadKeyRef.current === loadKey && courses !== null) {
       return;
@@ -140,8 +184,7 @@ export default function ProfilePageClient() {
     let isMounted = true;
 
     const loadCourses = async () => {
-      try {
-        const allCourses = await coursesApi.getAll();
+      const buildProfileCourses = async (allCourses: Course[]) => {
         const courseMap = new Map(allCourses.map((course) => [course._id, course]));
         const selected = courseIds
           .map((courseId) => courseMap.get(courseId))
@@ -169,13 +212,27 @@ export default function ProfilePageClient() {
             return buildCourse(course, progressPercent);
           })
         );
+        return mapped;
+      };
+
+      try {
+        const cachedAllCourses = loadCachedAllCourses();
+        if (!cachedProfile && cachedAllCourses) {
+          const cachedMapped = await buildProfileCourses(cachedAllCourses);
+          if (isMounted) {
+            setCourses(cachedMapped);
+          }
+        }
+
+        const allCourses = await coursesApi.getAll();
+        saveCachedAllCourses(allCourses);
+        const mapped = await buildProfileCourses(allCourses);
         if (isMounted) {
           setCourses(mapped);
+          saveCachedCourses(user.email, mapped);
         }
       } catch {
-        if (isMounted) {
-          setCourses(null);
-        }
+        // Оставляем кэш/предыдущее состояние, чтобы не моргало
       }
     };
 
@@ -198,10 +255,10 @@ export default function ProfilePageClient() {
 
   const userName = useMemo(() => {
     if (!user?.email) {
-      return "Сергей";
+      return "";
     }
     const name = user.email.split("@")[0];
-    return name || "Сергей";
+    return name || "";
   }, [user?.email]);
 
   return (
@@ -211,8 +268,8 @@ export default function ProfilePageClient() {
         onRemoveCourse={handleRemoveCourse}
         onLogout={logout}
         courses={courses ?? []}
-        userName={userName}
-        userEmail={user?.email}
+        userName={user?.email ? userName : ""}
+        userEmail={user?.email ? user?.email : ""}
       />
       <SelectWorkoutModal isOpen={isModalOpen} onClose={closeModal} courseId={selectedCourseId} />
     </>
