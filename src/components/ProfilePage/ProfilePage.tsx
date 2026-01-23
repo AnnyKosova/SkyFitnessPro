@@ -2,13 +2,26 @@ import ScrollToTopButton from "@/components/CoursesSection/ScrollToTopButton";
 import Image from "next/image";
 import styles from "./ProfilePage.module.css";
 
-const courses = [
+export type ProfileCourse = {
+  id: string;
+  apiId?: string;
+  name: string;
+  image: string;
+  progress: number;
+  actionLabel: string;
+  days: number;
+  duration: string;
+};
+
+const defaultCourses: ProfileCourse[] = [
   {
     id: "yoga",
     name: "Йога",
     image: "/images/courses/yoga.png",
     progress: 40,
     actionLabel: "Продолжить",
+    days: 25,
+    duration: "20-50 мин/день",
   },
   {
     id: "stretching",
@@ -16,6 +29,8 @@ const courses = [
     image: "/images/courses/stretching.png",
     progress: 0,
     actionLabel: "Начать тренировку",
+    days: 25,
+    duration: "20-50 мин/день",
   },
   {
     id: "fitness",
@@ -23,14 +38,32 @@ const courses = [
     image: "/images/courses/fitness.png",
     progress: 100,
     actionLabel: "Начать заново",
+    days: 25,
+    duration: "20-50 мин/день",
   },
 ];
 
 type ProfilePageProps = {
-  onSelectWorkout?: () => void;
+  onSelectWorkout?: (courseId: string) => void;
+  onRemoveCourse?: (courseId: string) => void;
+  onLogout?: () => void;
+  courses?: ProfileCourse[];
+  userName?: string;
+  userEmail?: string;
 };
 
-export default function ProfilePage({ onSelectWorkout }: ProfilePageProps) {
+export default function ProfilePage({
+  onSelectWorkout,
+  onRemoveCourse,
+  onLogout,
+  courses = defaultCourses,
+  userName,
+  userEmail,
+}: ProfilePageProps) {
+  const profileName = userName ?? "Сергей";
+  const profileLogin =
+    userEmail === undefined ? "Логин: sergey.petrov96" : userEmail ? `Логин: ${userEmail}` : "";
+
   return (
     <main className={styles.page}>
       <h1 className={styles.title}>Профиль</h1>
@@ -46,9 +79,9 @@ export default function ProfilePage({ onSelectWorkout }: ProfilePageProps) {
           />
         </div>
         <div className={styles.profileInfo}>
-          <p className={styles.profileName}>Сергей</p>
-          <p className={styles.profileLogin}>Логин: sergey.petrov96</p>
-          <button className={styles.logoutButton} type="button">
+          <p className={styles.profileName}>{profileName}</p>
+          {profileLogin ? <p className={styles.profileLogin}>{profileLogin}</p> : null}
+          <button className={styles.logoutButton} type="button" onClick={onLogout}>
             Выйти
           </button>
         </div>
@@ -72,6 +105,7 @@ export default function ProfilePage({ onSelectWorkout }: ProfilePageProps) {
                   type="button"
                   aria-label="Удалить курс"
                   data-tooltip="Удалить курс"
+                  onClick={() => onRemoveCourse?.(course.apiId ?? course.id)}
                 >
                   <Image src="/images/icons/Delete.svg" alt="" width={32} height={32} />
                 </button>
@@ -87,7 +121,7 @@ export default function ProfilePage({ onSelectWorkout }: ProfilePageProps) {
                       height={20}
                       className={styles.metaIcon}
                     />
-                    25 дней
+                    {course.days} дней
                   </span>
                   <span className={styles.metaItem}>
                     <Image
@@ -97,7 +131,7 @@ export default function ProfilePage({ onSelectWorkout }: ProfilePageProps) {
                       height={20}
                       className={styles.metaIcon}
                     />
-                    20-50 мин/день
+                    {course.duration}
                   </span>
                 </div>
                 <div className={styles.metaItem}>
@@ -119,7 +153,11 @@ export default function ProfilePage({ onSelectWorkout }: ProfilePageProps) {
                     />
                   </div>
                 </div>
-                <button className={styles.courseAction} type="button" onClick={onSelectWorkout}>
+                <button
+                  className={styles.courseAction}
+                  type="button"
+                  onClick={() => onSelectWorkout?.(course.apiId ?? course.id)}
+                >
                   {course.actionLabel}
                 </button>
               </div>

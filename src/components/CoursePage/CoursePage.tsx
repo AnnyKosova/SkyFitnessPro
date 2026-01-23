@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import styles from "./CoursePage.module.css";
 
-const suitabilityItems = [
+const defaultSuitabilityItems = [
   {
     desktop: (
       <>
@@ -59,7 +59,7 @@ const suitabilityItems = [
   },
 ];
 
-const directions = [
+const defaultDirections = [
   "Йога для новичков",
   "Классическая йога",
   "Кундалини-йога",
@@ -68,7 +68,7 @@ const directions = [
   "Аштанга-йога",
 ];
 
-const benefits = [
+const defaultBenefits = [
   "проработка всех групп мышц",
   "тренировка суставов",
   "улучшение циркуляции крови",
@@ -80,11 +80,33 @@ type CoursePageProps = {
   title: string;
   heroImageSrc: string;
   heroImageSrcMobile?: string;
+  directions?: string[];
+  fitting?: string[];
+  onLoginClick?: () => void;
+  isAuthenticated?: boolean;
 };
 
-export default function CoursePage({ title, heroImageSrc, heroImageSrcMobile }: CoursePageProps) {
+export default function CoursePage({
+  title,
+  heroImageSrc,
+  heroImageSrcMobile,
+  directions,
+  fitting,
+  onLoginClick,
+  isAuthenticated,
+}: CoursePageProps) {
   const mobileSrc = heroImageSrcMobile ?? heroImageSrc;
   const [isMobile, setIsMobile] = useState(false);
+
+  const suitabilityItems = fitting?.length
+    ? fitting.slice(0, 3).map((item) => ({
+        desktop: item,
+        mobile: item,
+      }))
+    : defaultSuitabilityItems;
+
+  const directionsList = directions?.length ? directions : defaultDirections;
+  const benefitsList = fitting?.length ? fitting : defaultBenefits;
 
   useEffect(() => {
     const update = () => setIsMobile(window.innerWidth <= 768);
@@ -134,7 +156,7 @@ export default function CoursePage({ title, heroImageSrc, heroImageSrcMobile }: 
       <section className={styles.directions}>
         <h2 className={styles.sectionTitle}>Направления</h2>
         <div className={styles.directionsList}>
-          {directions.map((direction) => (
+          {directionsList.map((direction) => (
             <div className={styles.directionItem} key={direction}>
               <Image
                 src="/images/icons/Sparcle.svg"
@@ -187,13 +209,13 @@ export default function CoursePage({ title, heroImageSrc, heroImageSrcMobile }: 
             <br />к новому телу
           </h2>
           <ul className={styles.promoList}>
-            {benefits.map((benefit) => (
+            {benefitsList.map((benefit) => (
               <li className={styles.promoListItem} key={benefit}>
                 {benefit}
               </li>
             ))}
           </ul>
-          <button className={styles.promoButton} type="button">
+          <button className={styles.promoButton} type="button" onClick={onLoginClick}>
             Войдите, чтобы добавить курс
           </button>
         </div>

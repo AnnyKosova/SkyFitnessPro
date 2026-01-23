@@ -9,6 +9,8 @@ type AuthModalProps = {
   onRegisterClick?: () => void;
   showError?: boolean;
   errorMessage?: string;
+  isSubmitting?: boolean;
+  onSubmit?: (data: { email: string; password: string }) => void;
 };
 
 export default function AuthModal({
@@ -17,6 +19,8 @@ export default function AuthModal({
   onRegisterClick,
   showError = false,
   errorMessage,
+  isSubmitting = false,
+  onSubmit,
 }: AuthModalProps) {
   if (!isOpen) {
     return null;
@@ -39,7 +43,16 @@ export default function AuthModal({
           className={styles.logo}
           priority
         />
-        <form className={styles.form} onSubmit={(event) => event.preventDefault()}>
+        <form
+          className={styles.form}
+          onSubmit={(event) => {
+            event.preventDefault();
+            const formData = new FormData(event.currentTarget);
+            const email = String(formData.get("login") || "").trim();
+            const password = String(formData.get("password") || "");
+            onSubmit?.({ email, password });
+          }}
+        >
           <input
             className={styles.input}
             type="text"
@@ -72,7 +85,7 @@ export default function AuthModal({
               )}
             </p>
           )}
-          <button className={primaryButtonClassName} type="button">
+          <button className={primaryButtonClassName} type="submit" disabled={isSubmitting}>
             Войти
           </button>
           <button className={styles.secondaryButton} type="button" onClick={onRegisterClick}>

@@ -44,6 +44,7 @@ export interface Course {
     from: number;
     to: number;
   };
+  order?: number;
 }
 
 export interface CourseWorkout {

@@ -1,12 +1,12 @@
+"use client";
+
 import CoursePageClient from "@/components/CoursePage/CoursePageClient";
+import { notFound } from "next/navigation";
 
-type CourseConfig = {
-  title: string;
-  heroImageSrc: string;
-  heroImageSrcMobile?: string;
-};
-
-const courseConfig: Record<string, CourseConfig> = {
+const courseConfig: Record<
+  string,
+  { title: string; heroImageSrc: string; heroImageSrcMobile?: string }
+> = {
   yoga: {
     title: "Йога",
     heroImageSrc: "/images/courses/Yogapagecourse.png",
@@ -16,6 +16,10 @@ const courseConfig: Record<string, CourseConfig> = {
     title: "Стретчинг",
     heroImageSrc: "/images/courses/Stretchingpagecourse.png",
   },
+  bodyflex: {
+    title: "Бодифлекс",
+    heroImageSrc: "/images/courses/Bodyflexpagecourse.png",
+  },
   fitness: {
     title: "Фитнес",
     heroImageSrc: "/images/courses/Fitnesspagecourse.png",
@@ -24,21 +28,20 @@ const courseConfig: Record<string, CourseConfig> = {
     title: "Степ-аэробика",
     heroImageSrc: "/images/courses/StepAerobicspagecourse.png",
   },
-  bodyflex: {
-    title: "Бодифлекс",
-    heroImageSrc: "/images/courses/Bodyflexpagecourse.png",
-  },
 };
 
-export default function CourseDetailsPage({ params }: { params: { courseId: string } }) {
-  const currentConfig = courseConfig[params.courseId] ?? courseConfig.yoga;
+export default function CoursePage({ params }: { params: { courseId: string } }) {
+  const config = courseConfig[params.courseId];
+  if (!config) {
+    notFound();
+  }
 
   return (
     <CoursePageClient
-      title={currentConfig.title}
-      heroImageSrc={currentConfig.heroImageSrc}
-      heroImageSrcMobile={currentConfig.heroImageSrcMobile}
+      courseId={params.courseId}
+      title={config.title}
+      heroImageSrc={config.heroImageSrc}
+      heroImageSrcMobile={config.heroImageSrcMobile}
     />
   );
 }
-

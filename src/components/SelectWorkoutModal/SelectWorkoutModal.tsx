@@ -1,5 +1,7 @@
 "use client";
 
+import { coursesApi } from "@/api/fitness";
+import type { CourseWorkout } from "@/types/api";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -12,53 +14,24 @@ type WorkoutItem = {
   checked: boolean;
 };
 
-const workouts: WorkoutItem[] = [
-  {
-    id: "1",
-    title: "Утренняя практика",
-    subtitle: "Йога на каждый день / 1 день",
-    checked: false,
-  },
-  {
-    id: "2",
-    title: "Асаны стоя",
-    subtitle: "Йога на каждый день / 3 день",
-    checked: false,
-  },
-  {
-    id: "3",
-    title: "Асаны стоя",
-    subtitle: "Йога на каждый день / 3 день",
-    checked: false,
-  },
-  {
-    id: "4",
-    title: "Растягиваем мышцы бедра",
-    subtitle: "Йога на каждый день / 4 день",
-    checked: false,
-  },
-  {
-    id: "5",
-    title: "Растягиваем мышцы бедра",
-    subtitle: "Йога на каждый день / 4 день",
-    checked: false,
-  },
-  {
-    id: "6",
-    title: "Растягиваем мышцы бедра",
-    subtitle: "Йога на каждый день / 4 день",
-    checked: false,
-  },
-];
-
 type SelectWorkoutModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  courseId?: string | null;
 };
 
-export default function SelectWorkoutModal({ isOpen, onClose }: SelectWorkoutModalProps) {
+const mapWorkouts = (workouts: CourseWorkout[]): WorkoutItem[] =>
+  workouts.map((workout, index) => ({
+    id: workout._id,
+    title: workout.name,
+    subtitle: `Урок ${index + 1}`,
+    checked: false,
+  }));
+
+export default function SelectWorkoutModal({ isOpen, onClose, courseId }: SelectWorkoutModalProps) {
   const router = useRouter();
-  const [items, setItems] = useState<WorkoutItem[]>(workouts);
+  const [items, setItems] = useState<WorkoutItem[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [thumbOffset, setThumbOffset] = useState(0);
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -99,6 +72,37 @@ export default function SelectWorkoutModal({ isOpen, onClose }: SelectWorkoutMod
   }, [isOpen, updateThumb]);
 
   useEffect(() => {
+    if (!isOpen || !courseId) {
+      setItems([]);
+      setIsLoading(false);
+      return;
+    }
+
+    let isMounted = true;
+    const loadWorkouts = async () => {
+      try {
+        setIsLoading(true);
+        const data = await coursesApi.getWorkouts(courseId);
+        if (isMounted) {
+          setItems(mapWorkouts(data));
+        }
+      } catch {
+        if (isMounted) {
+          setItems([]);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+    loadWorkouts();
+    return () => {
+      isMounted = false;
+    };
+  }, [courseId, isOpen]);
+
+  useEffect(() => {
     if (isOpen) {
       document.body.classList.add("noScroll");
     } else {
@@ -134,31 +138,37 @@ export default function SelectWorkoutModal({ isOpen, onClose }: SelectWorkoutMod
         <h2 className={styles.title}>Выберите тренировку</h2>
         <div className={styles.listWrapper}>
           <div className={styles.list} ref={listRef}>
-            {items.map((item) => (
-              <div key={item.id} className={styles.listItem}>
-                <button
-                  type="button"
-                  className={styles.listIcon}
-                  onClick={() => handleToggle(item.id)}
-                  aria-label={item.checked ? "Снять выбор" : "Выбрать"}
-                >
-                  <Image
-                    src={
-                      item.checked
-                        ? "/images/courses/Check-in-Circle.png"
-                        : "/images/courses/Check-in-Circle-No.png"
-                    }
-                    alt={item.checked ? "Выбрано" : "Не выбрано"}
-                    width={24}
-                    height={24}
-                  />
-                </button>
-                <div className={styles.listText}>
-                  <h3 className={styles.listTitle}>{item.title}</h3>
-                  <p className={styles.listSubtitle}>{item.subtitle}</p>
+            {isLoading ? (
+              <div className={styles.listState}>Загрузка...</div>
+            ) : items.length === 0 ? (
+              <div className={styles.listState}>Нет доступных тренировок</div>
+            ) : (
+              items.map((item) => (
+                <div key={item.id} className={styles.listItem}>
+                  <button
+                    type="button"
+                    className={styles.listIcon}
+                    onClick={() => handleToggle(item.id)}
+                    aria-label={item.checked ? "Снять выбор" : "Выбрать"}
+                  >
+                    <Image
+                      src={
+                        item.checked
+                          ? "/images/courses/Check-in-Circle.png"
+                          : "/images/courses/Check-in-Circle-No.png"
+                      }
+                      alt={item.checked ? "Выбрано" : "Не выбрано"}
+                      width={24}
+                      height={24}
+                    />
+                  </button>
+                  <div className={styles.listText}>
+                    <h3 className={styles.listTitle}>{item.title}</h3>
+                    <p className={styles.listSubtitle}>{item.subtitle}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
           <div className={styles.scrollTrack}>
             <div
@@ -171,7 +181,7 @@ export default function SelectWorkoutModal({ isOpen, onClose }: SelectWorkoutMod
           className={styles.startButton}
           type="button"
           onClick={handleStart}
-          disabled={!items.some((item) => item.checked)}
+          disabled={isLoading || !items.some((item) => item.checked)}
         >
           Начать
         </button>

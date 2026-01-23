@@ -37,6 +37,7 @@
   position: relative;
   display: flex;
   align-items: flex-start;
+  height: 346px;
 }
 
 .fields {
@@ -44,6 +45,15 @@
   flex-direction: column;
   gap: 20px;
   padding-right: 32px;
+  height: 346px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  overscroll-behavior: contain;
+}
+
+.fields::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 .field {
@@ -147,7 +157,9 @@
   .label {
     font-size: 16px;
     font-weight: 400;
-    line-height: 110%;
+    line-height: 120%;
+    max-width: 237px;
+    overflow-wrap: anywhere;
   }
 
   .input {

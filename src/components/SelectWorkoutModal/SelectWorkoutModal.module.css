@@ -46,6 +46,15 @@
   scrollbar-width: none;
 }
 
+.listState {
+  font-family: var(--font-roboto);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 120%;
+  color: rgba(0, 0, 0, 1);
+  padding: 16px 0;
+}
+
 .list::-webkit-scrollbar {
   width: 0;
   height: 0;
@@ -126,7 +135,9 @@
   color: rgba(0, 0, 0, 1);
   border: none;
   cursor: pointer;
-  transition: background 0.25s ease, color 0.25s ease;
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
 }
 
 .startButton:hover {
@@ -173,18 +184,26 @@
     height: 335px;
   }
 
+  .listState {
+    font-size: 16px;
+  }
+
   .listItem {
-    height: 80px;
+    height: auto;
+    align-items: flex-start;
+    padding-bottom: 12px;
   }
 
   .listTitle {
     font-size: 18px;
     font-weight: 400;
+    line-height: 120%;
   }
 
   .listSubtitle {
     font-size: 14px;
     font-weight: 400;
+    line-height: 120%;
   }
 
   .scrollTrack {
