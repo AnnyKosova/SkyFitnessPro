@@ -1,13 +1,13 @@
 "use client";
 
 import { coursesApi, userApi } from "@/api/fitness";
+import ScrollToTopButton from "@/components/ScrollToTopButton/ScrollToTopButton";
 import { useAuth } from "@/context/AuthContext";
 import type { Course } from "@/types/api";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import CourseCard from "./CourseCard/CourseCard";
 import styles from "./CoursesSection.module.css";
-import ScrollToTopButton from "./ScrollToTopButton";
 
 type CourseCardData = {
   id: string;
@@ -168,34 +168,37 @@ export default function CoursesSection({ onLoginClick }: CoursesSectionProps) {
     return new Map(entries);
   }, [courses]);
 
-  const handleAddCourse = async (courseId?: string, slug?: string) => {
-    const hasToken = typeof window !== "undefined" && Boolean(localStorage.getItem("token"));
-    if (!isAuthenticated && !hasToken) {
-      toast("Чтобы добавить курс, войдите в аккаунт", { id: "auth-required" });
-      onLoginClick?.();
-      return;
-    }
-    const resolvedId = courseId ?? (slug ? apiIdBySlug.get(slug) : undefined);
-    if (!resolvedId) {
-      return;
-    }
-    if (user?.selectedCourses?.includes(resolvedId)) {
-      return;
-    }
-    if (isAdding) {
-      return;
-    }
-    try {
-      setIsAdding(true);
-      await userApi.addCourse({ courseId: resolvedId });
-      await refreshUser();
-      toast.success("Курс добавлен в Ваш профиль", { id: "course-added" });
-    } catch {
-      // Ошибка от API не влияет на верстку, ничего не показываем
-    } finally {
-      setIsAdding(false);
-    }
-  };
+  const handleAddCourse = useCallback(
+    async (courseId?: string, slug?: string) => {
+      const hasToken = typeof window !== "undefined" && Boolean(localStorage.getItem("token"));
+      if (!isAuthenticated && !hasToken) {
+        toast("Чтобы добавить курс, войдите в аккаунт", { id: "auth-required" });
+        onLoginClick?.();
+        return;
+      }
+      const resolvedId = courseId ?? (slug ? apiIdBySlug.get(slug) : undefined);
+      if (!resolvedId) {
+        return;
+      }
+      if (user?.selectedCourses?.includes(resolvedId)) {
+        return;
+      }
+      if (isAdding) {
+        return;
+      }
+      try {
+        setIsAdding(true);
+        await userApi.addCourse({ courseId: resolvedId });
+        await refreshUser();
+        toast.success("Курс добавлен в Ваш профиль", { id: "course-added" });
+      } catch {
+        // Ошибка от API не влияет на верстку, ничего не показываем
+      } finally {
+        setIsAdding(false);
+      }
+    },
+    [apiIdBySlug, isAdding, isAuthenticated, onLoginClick, refreshUser, user?.selectedCourses]
+  );
 
   return (
     <section className={styles.coursesSection}>

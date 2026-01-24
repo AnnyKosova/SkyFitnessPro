@@ -114,19 +114,19 @@ export default function SelectWorkoutModal({ isOpen, onClose, courseId }: Select
     };
   }, [isOpen]);
 
-  const handleToggle = (id: string) => {
+  const handleToggle = useCallback((id: string) => {
     setItems((prev) =>
       prev.map((item) => (item.id === id ? { ...item, checked: !item.checked } : item))
     );
-  };
+  }, []);
 
-  const handleStart = () => {
+  const handleStart = useCallback(() => {
     const selectedWorkout = items.find((item) => item.checked);
     if (selectedWorkout) {
       onClose();
       router.push(`/workouts/${selectedWorkout.id}`);
     }
-  };
+  }, [items, onClose, router]);
 
   if (!isOpen) {
     return null;
