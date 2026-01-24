@@ -18,10 +18,23 @@
   object-position: center;
 }
 
+.heroImageMobile {
+  display: none !important;
+}
+
 @media (max-width: 768px) {
   .hero {
     width: 343px;
     height: 325px;
+    background: rgba(247, 247, 247, 1);
+  }
+
+  .heroImageDesktop {
+    display: none !important;
+  }
+
+  .heroImageMobile {
+    display: block !important;
   }
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import styles from "./CoursePage.module.css";
 
 const defaultSuitabilityItems = [
@@ -84,6 +84,9 @@ type CoursePageProps = {
   fitting?: string[];
   onLoginClick?: () => void;
   isAuthenticated?: boolean;
+  courseSlug?: string;
+  isInProfile?: boolean;
+  onCourseAction?: () => void;
 };
 
 export default function CoursePage({
@@ -94,9 +97,14 @@ export default function CoursePage({
   fitting,
   onLoginClick,
   isAuthenticated,
+  courseSlug,
+  isInProfile = false,
+  onCourseAction,
 }: CoursePageProps) {
-  const mobileSrc = heroImageSrcMobile ?? heroImageSrc;
-  const [isMobile, setIsMobile] = useState(false);
+  const mobileSrc = useMemo(
+    () => heroImageSrcMobile ?? heroImageSrc,
+    [heroImageSrcMobile, heroImageSrc]
+  );
 
   const suitabilityItems = fitting?.length
     ? fitting.slice(0, 3).map((item) => ({
@@ -108,21 +116,21 @@ export default function CoursePage({
   const directionsList = directions?.length ? directions : defaultDirections;
   const benefitsList = fitting?.length ? fitting : defaultBenefits;
 
-  useEffect(() => {
-    const update = () => setIsMobile(window.innerWidth <= 768);
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, []);
-
   return (
-    <main className={styles.page}>
+    <main className={styles.page} data-course={courseSlug}>
       <section className={styles.hero}>
         <Image
-          src={isMobile ? mobileSrc : heroImageSrc}
+          src={heroImageSrc}
           alt={title}
           fill
-          className={styles.heroImageAsset}
+          className={`${styles.heroImageAsset} ${styles.heroImageDesktop}`}
+          priority
+        />
+        <Image
+          src={mobileSrc}
+          alt={title}
+          fill
+          className={`${styles.heroImageAsset} ${styles.heroImageMobile}`}
           priority
         />
       </section>
@@ -215,8 +223,16 @@ export default function CoursePage({
               </li>
             ))}
           </ul>
-          <button className={styles.promoButton} type="button" onClick={onLoginClick}>
-            Войдите, чтобы добавить курс
+          <button
+            className={styles.promoButton}
+            type="button"
+            onClick={isAuthenticated ? onCourseAction : onLoginClick}
+          >
+            {isAuthenticated
+              ? isInProfile
+                ? "Удалить курс"
+                : "Добавить курс"
+              : "Войдите, чтобы добавить курс"}
           </button>
         </div>
       </section>

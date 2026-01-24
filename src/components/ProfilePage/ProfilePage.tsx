@@ -46,7 +46,9 @@ const defaultCourses: ProfileCourse[] = [
 type ProfilePageProps = {
   onSelectWorkout?: (courseId: string) => void;
   onRemoveCourse?: (courseId: string) => void;
+  onResetCourse?: (courseId: string) => void;
   onLogout?: () => void;
+  onOpenCourse?: (courseId: string) => void;
   courses?: ProfileCourse[];
   userName?: string;
   userEmail?: string;
@@ -55,7 +57,9 @@ type ProfilePageProps = {
 export default function ProfilePage({
   onSelectWorkout,
   onRemoveCourse,
+  onResetCourse,
   onLogout,
+  onOpenCourse,
   courses = defaultCourses,
   userName,
   userEmail,
@@ -91,7 +95,11 @@ export default function ProfilePage({
         <h2 className={styles.sectionTitle}>Мои курсы</h2>
         <div className={styles.coursesGrid}>
           {courses.map((course) => (
-            <article key={course.id} className={styles.courseCard}>
+            <article
+              key={course.id}
+              className={styles.courseCard}
+              onClick={() => onOpenCourse?.(course.id)}
+            >
               <div className={styles.courseImageWrapper}>
                 <Image
                   src={course.image}
@@ -105,7 +113,10 @@ export default function ProfilePage({
                   type="button"
                   aria-label="Удалить курс"
                   data-tooltip="Удалить курс"
-                  onClick={() => onRemoveCourse?.(course.apiId ?? course.id)}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onRemoveCourse?.(course.apiId ?? course.id);
+                  }}
                 >
                   <Image src="/images/icons/Delete.svg" alt="" width={32} height={32} />
                 </button>
@@ -156,7 +167,15 @@ export default function ProfilePage({
                 <button
                   className={styles.courseAction}
                   type="button"
-                  onClick={() => onSelectWorkout?.(course.apiId ?? course.id)}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    const courseId = course.apiId ?? course.id;
+                    if (course.actionLabel === "Начать заново") {
+                      onResetCourse?.(courseId);
+                      return;
+                    }
+                    onSelectWorkout?.(courseId);
+                  }}
                 >
                   {course.actionLabel}
                 </button>

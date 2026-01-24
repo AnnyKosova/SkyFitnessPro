@@ -123,6 +123,7 @@ export default function ProfilePageClient() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [isRemoving, setIsRemoving] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
   const lastLoadKeyRef = useRef<string | null>(null);
 
   const openModal = useCallback((courseId: string) => {
@@ -134,6 +135,13 @@ export default function ProfilePageClient() {
     setIsModalOpen(false);
     setSelectedCourseId(null);
   }, []);
+
+  const handleOpenCourse = useCallback(
+    (courseId: string) => {
+      router.push(`/courses/${courseId}`);
+    },
+    [router]
+  );
 
   const handleRemoveCourse = useCallback(
     async (courseId: string) => {
@@ -154,6 +162,32 @@ export default function ProfilePageClient() {
       }
     },
     [isRemoving, refreshUser]
+  );
+
+  const handleResetCourse = useCallback(
+    async (courseId: string) => {
+      if (isResetting) {
+        return;
+      }
+      try {
+        setIsResetting(true);
+        await coursesApi.resetProgress(courseId);
+        setCourses((prev) =>
+          prev
+            ? prev.map((item) =>
+                (item.apiId ?? item.id) === courseId
+                  ? { ...item, progress: 0, actionLabel: "Начать тренировку" }
+                  : item
+              )
+            : prev
+        );
+      } catch {
+        // Ошибка отображается через общие сообщения API, не меняем верстку
+      } finally {
+        setIsResetting(false);
+      }
+    },
+    [isResetting]
   );
 
   useEffect(() => {
@@ -266,7 +300,9 @@ export default function ProfilePageClient() {
       <ProfilePage
         onSelectWorkout={openModal}
         onRemoveCourse={handleRemoveCourse}
+        onResetCourse={handleResetCourse}
         onLogout={logout}
+        onOpenCourse={handleOpenCourse}
         courses={courses ?? []}
         userName={user?.email ? userName : ""}
         userEmail={user?.email ? user?.email : ""}
