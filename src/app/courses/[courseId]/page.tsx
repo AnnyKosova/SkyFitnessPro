@@ -15,18 +15,22 @@ const courseConfig: Record<
   stretching: {
     title: "Стретчинг",
     heroImageSrc: "/images/courses/Stretchingpagecourse.png",
+    heroImageSrcMobile: "/images/courses/stretching.png",
   },
   bodyflex: {
     title: "Бодифлекс",
     heroImageSrc: "/images/courses/Bodyflexpagecourse.png",
+    heroImageSrcMobile: "/images/courses/bodyflex.png",
   },
   fitness: {
     title: "Фитнес",
     heroImageSrc: "/images/courses/Fitnesspagecourse.png",
+    heroImageSrcMobile: "/images/courses/fitness.png",
   },
   "step-aerobics": {
     title: "Степ-аэробика",
     heroImageSrc: "/images/courses/StepAerobicspagecourse.png",
+    heroImageSrcMobile: "/images/courses/step-aerobics.png",
   },
 };
 

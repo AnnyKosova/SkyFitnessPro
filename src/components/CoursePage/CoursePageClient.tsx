@@ -1,6 +1,6 @@
 "use client";
 
-import { coursesApi } from "@/api/fitness";
+import { coursesApi, userApi } from "@/api/fitness";
 import AuthModal from "@/components/AuthModal/AuthModal";
 import Header from "@/components/Header/Header";
 import RegisterModal from "@/components/RegisterModal/RegisterModal";
@@ -8,6 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import type { Course } from "@/types/api";
 import { validateEmail, validatePassword, validatePasswordMatch } from "@/utils/authValidation";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
 import CoursePage from "./CoursePage";
 
 const slugOverrides: Record<string, string> = {
@@ -48,7 +49,7 @@ export default function CoursePageClient({
   heroImageSrc,
   heroImageSrcMobile,
 }: CoursePageClientProps) {
-  const { user, isAuthenticated, login, register, logout } = useAuth();
+  const { user, isAuthenticated, login, register, logout, refreshUser } = useAuth();
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
@@ -56,6 +57,7 @@ export default function CoursePageClient({
   const [isAuthSubmitting, setIsAuthSubmitting] = useState(false);
   const [isRegisterSubmitting, setIsRegisterSubmitting] = useState(false);
   const [course, setCourse] = useState<Course | null>(null);
+  const [isUpdatingCourse, setIsUpdatingCourse] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -165,6 +167,37 @@ export default function CoursePageClient({
     return name || "";
   }, [user?.email]);
 
+  const isInProfile = useMemo(() => {
+    if (!course?._id || !user?.selectedCourses) {
+      return false;
+    }
+    return user.selectedCourses.includes(course._id);
+  }, [course?._id, user?.selectedCourses]);
+
+  const handleCourseAction = useCallback(async () => {
+    if (!course?._id || isUpdatingCourse) {
+      return;
+    }
+    try {
+      setIsUpdatingCourse(true);
+      if (isInProfile) {
+        await userApi.removeCourse(course._id);
+      } else {
+        await userApi.addCourse({ courseId: course._id });
+      }
+      await refreshUser();
+    } catch {
+      // Ошибка от API не влияет на верстку, ничего не показываем
+    } finally {
+      setIsUpdatingCourse(false);
+    }
+  }, [course?._id, isInProfile, isUpdatingCourse, refreshUser]);
+
+  const handleLoginClick = useCallback(() => {
+    toast("Чтобы добавить курс, войдите в аккаунт", { id: "auth-required" });
+    handleOpenAuth();
+  }, [handleOpenAuth]);
+
   return (
     <>
       <Header
@@ -180,8 +213,11 @@ export default function CoursePageClient({
         heroImageSrcMobile={heroImageSrcMobile}
         directions={course?.directions}
         fitting={course?.fitting}
-        onLoginClick={handleOpenAuth}
+        onLoginClick={handleLoginClick}
         isAuthenticated={isAuthenticated}
+        courseSlug={courseId}
+        isInProfile={isInProfile}
+        onCourseAction={handleCourseAction}
       />
       <AuthModal
         isOpen={isAuthOpen}
