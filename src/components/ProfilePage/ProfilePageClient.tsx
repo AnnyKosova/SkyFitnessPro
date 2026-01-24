@@ -275,7 +275,7 @@ export default function ProfilePageClient() {
     return () => {
       isMounted = false;
     };
-  }, [isAuthenticated, isLoading, user]);
+  }, [courses, isAuthenticated, isLoading, user]);
 
   useEffect(() => {
     if (isLoading) {
