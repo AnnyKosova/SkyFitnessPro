@@ -1,13 +1,12 @@
 "use client";
 
 import type { MouseEvent } from "react";
-import styles from "./CoursesSection.module.css";
+import styles from "./ScrollToTopButton.module.css";
 
 export default function ScrollToTopButton() {
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    
-    // Простой и надежный способ скролла
+
     if (typeof window !== "undefined") {
       window.scrollTo({
         top: 0,
@@ -18,8 +17,8 @@ export default function ScrollToTopButton() {
   };
 
   return (
-    <button 
-      className={styles.scrollToTopButton} 
+    <button
+      className={`${styles.scrollToTopButton} scrollToTopButton`}
       onClick={handleClick}
       type="button"
       aria-label="Прокрутить наверх"
@@ -28,4 +27,3 @@ export default function ScrollToTopButton() {
     </button>
   );
 }
-

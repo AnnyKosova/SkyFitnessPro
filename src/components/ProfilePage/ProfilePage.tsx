@@ -1,4 +1,4 @@
-import ScrollToTopButton from "@/components/CoursesSection/ScrollToTopButton";
+import ScrollToTopButton from "@/components/ScrollToTopButton/ScrollToTopButton";
 import Image from "next/image";
 import styles from "./ProfilePage.module.css";
 

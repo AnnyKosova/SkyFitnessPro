@@ -1,13 +1,13 @@
 "use client";
 
 import { coursesApi, userApi } from "@/api/fitness";
+import ScrollToTopButton from "@/components/ScrollToTopButton/ScrollToTopButton";
 import { useAuth } from "@/context/AuthContext";
 import type { Course } from "@/types/api";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import CourseCard from "./CourseCard/CourseCard";
 import styles from "./CoursesSection.module.css";
-import ScrollToTopButton from "./ScrollToTopButton";
 
 type CourseCardData = {
   id: string;
