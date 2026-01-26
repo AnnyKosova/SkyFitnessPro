@@ -1,5 +1,8 @@
 .page {
-  padding: 60px var(--page-padding) 0;
+  padding-top: 60px;
+  padding-right: max(16px, calc(50% - 1160px / 2));
+  padding-left: max(16px, calc(50% - 1160px / 2));
+  padding-bottom: 0;
 }
 
 .title {
@@ -286,6 +289,22 @@
 
 .scrollToTopWrapper {
   display: none;
+}
+
+@media (max-width: 1200px) {
+  .profileCard {
+    width: 100%;
+    max-width: 1160px;
+  }
+
+  .coursesGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .courseCard {
+    width: 100%;
+    max-width: 360px;
+  }
 }
 
 @media (max-width: 768px) {
