@@ -1,6 +1,6 @@
 .heroSection {
-  padding-left: var(--page-padding);
-  padding-right: var(--page-padding);
+  padding-left: max(16px, calc(50% - 1160px / 2));
+  padding-right: max(16px, calc(50% - 1160px / 2));
   margin-top: 60px;
 }
 
@@ -49,6 +49,17 @@
 
 .bubbleImage {
   display: block;
+}
+
+@media (max-width: 1200px) {
+  .headline {
+    width: 100%;
+    height: auto;
+  }
+
+  .speechBubble {
+    display: none;
+  }
 }
 
 @media (max-width: 768px) {
