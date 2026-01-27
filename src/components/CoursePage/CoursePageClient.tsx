@@ -21,11 +21,6 @@ const slugOverrides: Record<string, string> = {
   stepairobic: "step-aerobics",
   "step-aerobika": "step-aerobics",
   bodyflex: "bodyflex",
-  бодифлекс: "bodyflex",
-  "степ-аэробика": "step-aerobics",
-  стретчинг: "stretching",
-  йога: "yoga",
-  фитнес: "fitness",
 };
 
 const toSlug = (value: string) => {
