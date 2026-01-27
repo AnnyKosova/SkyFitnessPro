@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback } from "react";
 import Image from "next/image";
+import { useCallback, useEffect } from "react";
 import styles from "./WorkoutSuccessModal.module.css";
 
 type WorkoutSuccessModalProps = {
@@ -9,6 +9,16 @@ type WorkoutSuccessModalProps = {
 };
 
 export default function WorkoutSuccessModal({ onClose }: WorkoutSuccessModalProps) {
+  useEffect(() => {
+    const timerId = window.setTimeout(() => {
+      onClose();
+    }, 2000);
+
+    return () => {
+      window.clearTimeout(timerId);
+    };
+  }, [onClose]);
+
   const handleOverlayClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       if (event.target === event.currentTarget) {
@@ -23,7 +33,7 @@ export default function WorkoutSuccessModal({ onClose }: WorkoutSuccessModalProp
       <div className={styles.modal}>
         <h2 className={styles.title}>Ваш прогресс засчитан!</h2>
         <Image
-          src="/images/courses/Check-in-Circle.png"
+          src="/images/courses/Check-in-Circle.svg"
           alt="Прогресс сохранен"
           width={68}
           height={68}
@@ -33,4 +43,3 @@ export default function WorkoutSuccessModal({ onClose }: WorkoutSuccessModalProp
     </div>
   );
 }
-

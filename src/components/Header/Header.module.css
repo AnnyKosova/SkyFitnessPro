@@ -1,7 +1,7 @@
 .header {
   padding-top: 50px;
-  padding-left: var(--page-padding);
-  padding-right: var(--page-padding);
+  padding-left: max(16px, calc(50% - 1160px / 2));
+  padding-right: max(16px, calc(50% - 1160px / 2));
 }
 
 .container {
@@ -238,5 +238,20 @@
   .userIcon {
     width: 36px;
     height: 36px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .container {
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .loginButton {
+    margin-left: 0;
+  }
+
+  .userButton {
+    margin-left: 0;
   }
 }
