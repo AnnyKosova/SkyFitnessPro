@@ -134,7 +134,7 @@
   margin-top: 102px;
   width: 1160px;
   height: 486px;
-  margin-bottom: 50px;
+  margin-bottom: 0;
   position: relative;
   overflow: visible;
 }
@@ -149,6 +149,7 @@
 .promo {
   width: 1160px;
   height: 486px;
+  margin-bottom: 50px;
   background: rgba(255, 255, 255, 1);
   border-radius: 30px;
   padding: 40px;
@@ -238,26 +239,26 @@
 
 .promoSwoosh {
   position: absolute;
-  right: -22px;
-  bottom: -119px;
+  right: -20px;
+  bottom: -126px;
   width: 739px;
   height: auto;
-  z-index: -2;
+  z-index: 1;
 }
 
 .promoMan {
   position: absolute;
-  right: -7px;
-  bottom: -14px;
+  right: 30px;
+  bottom: 17px;
   width: 515px;
   height: auto;
-  z-index: 3;
+  z-index: 2;
 }
 
 .promoStrip {
   position: absolute;
-  right: 342px;
-  top: -19px;
+  right: 374px;
+  top: 32px;
   width: 54px;
   height: auto;
   z-index: 3;
@@ -393,6 +394,7 @@
     height: 412px;
     padding: 30px;
     margin-top: -412px;
+    margin-bottom: 0;
   }
 
   .promoDecor {

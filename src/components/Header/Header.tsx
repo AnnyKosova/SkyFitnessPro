@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./Header.module.css";
 
 type HeaderProps = {
@@ -12,30 +12,42 @@ type HeaderProps = {
   userName?: string;
   userEmail?: string;
   onLogout?: () => void;
-  forceMenuOpen?: boolean;
   hideTagline?: boolean;
 };
 
 export default function Header({
   onLoginClick,
-  isAuthenticated,
+  isAuthenticated = false,
   userName,
   userEmail,
   onLogout,
-  forceMenuOpen,
-  hideTagline,
+  hideTagline = false,
 }: HeaderProps) {
-  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   const toggleMenu = useCallback(() => {
-    if (forceMenuOpen) {
+    setIsMenuOpen((prev) => !prev);
+  }, []);
+
+  useEffect(() => {
+    if (!isMenuOpen) {
       return;
     }
-    setIsMenuOpen((prev) => !prev);
-  }, [forceMenuOpen]);
-
-  const isMenuVisible = forceMenuOpen || isMenuOpen;
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!menuRef.current) {
+        return;
+      }
+      if (!menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMenuOpen]);
 
   const handleProfileClick = useCallback(() => {
     setIsMenuOpen(false);
@@ -44,34 +56,43 @@ export default function Header({
 
   const handleLogoutClick = useCallback(() => {
     setIsMenuOpen(false);
-    if (onLogout) {
-      onLogout();
-      return;
-    }
-    router.push("/");
-  }, [onLogout, router]);
-
-  const displayName = userName || (userEmail ? userEmail.split("@")[0] : "");
+    onLogout?.();
+  }, [onLogout]);
 
   return (
     <header className={styles.header}>
       <div className={styles.container}>
         <div className={styles.logoSection}>
-          <Link href="/" className={styles.logoLink}>
+          <Link className={styles.logoLink} href="/">
             <Image
               src="/images/logo/logo.svg"
-              alt="SkyFitness Pro"
-              width={200}
-              height={50}
+              alt="SkyFitnessPro"
+              width={220}
+              height={36}
               className={styles.logo}
               priority
             />
           </Link>
-          {!hideTagline && <p className={styles.tagline}>Онлайн-тренировки для занятий дома</p>}
+          {!hideTagline && (
+            <p className={styles.tagline}>Онлайн-тренировки для занятий дома</p>
+          )}
         </div>
-        {isAuthenticated ? (
-          <div className={styles.userMenuWrapper}>
-            <button className={styles.userButton} type="button" onClick={toggleMenu}>
+
+        {!isAuthenticated ? (
+          onLoginClick ? (
+            <button className={styles.loginButton} type="button" onClick={onLoginClick}>
+              Войти
+            </button>
+          ) : null
+        ) : (
+          <div className={styles.userMenuWrapper} ref={menuRef}>
+            <button
+              className={styles.userButton}
+              type="button"
+              onClick={toggleMenu}
+              aria-expanded={isMenuOpen}
+              aria-haspopup="menu"
+            >
               <Image
                 src="/images/icons/Profile.svg"
                 alt=""
@@ -79,11 +100,7 @@ export default function Header({
                 height={24}
                 className={styles.userIcon}
               />
-              {displayName ? (
-                <span className={styles.userName}>{displayName}</span>
-              ) : (
-                <span className={styles.userName} />
-              )}
+              <span className={styles.userName}>{userName || "Пользователь"}</span>
               <Image
                 src="/images/icons/Down.svg"
                 alt=""
@@ -92,16 +109,17 @@ export default function Header({
                 className={styles.userArrow}
               />
             </button>
-            {isMenuVisible && (
-              <div className={styles.userMenu}>
-                {displayName ? <p className={styles.userMenuName}>{displayName}</p> : null}
+
+            {isMenuOpen && (
+              <div className={styles.userMenu} role="menu">
+                <p className={styles.userMenuName}>{userName || "Пользователь"}</p>
                 {userEmail ? <p className={styles.userMenuEmail}>{userEmail}</p> : null}
                 <button
                   className={styles.userMenuPrimary}
                   type="button"
                   onClick={handleProfileClick}
                 >
-                  Мой профиль
+                  Профиль
                 </button>
                 <button
                   className={styles.userMenuSecondary}
@@ -113,10 +131,6 @@ export default function Header({
               </div>
             )}
           </div>
-        ) : (
-          <button className={styles.loginButton} type="button" onClick={onLoginClick}>
-            Войти
-          </button>
         )}
       </div>
     </header>
