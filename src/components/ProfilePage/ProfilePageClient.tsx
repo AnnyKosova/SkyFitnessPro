@@ -125,6 +125,7 @@ export default function ProfilePageClient() {
   const [isRemoving, setIsRemoving] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
   const lastLoadKeyRef = useRef<string | null>(null);
+  const hasLoadedRef = useRef(false);
 
   const openModal = useCallback((courseId: string) => {
     setSelectedCourseId(courseId);
@@ -210,10 +211,13 @@ export default function ProfilePageClient() {
     }
 
     const loadKey = `${user.email ?? "user"}:${courseIds.join(",")}`;
-    if (lastLoadKeyRef.current === loadKey) {
+    if (lastLoadKeyRef.current !== loadKey) {
+      lastLoadKeyRef.current = loadKey;
+      hasLoadedRef.current = false;
+    }
+    if (hasLoadedRef.current) {
       return;
     }
-    lastLoadKeyRef.current = loadKey;
 
     let isMounted = true;
 
@@ -264,6 +268,7 @@ export default function ProfilePageClient() {
         if (isMounted) {
           setCourses(mapped);
           saveCachedCourses(user.email, mapped);
+          hasLoadedRef.current = true;
         }
       } catch {
         // Оставляем кэш/предыдущее состояние, чтобы не моргало

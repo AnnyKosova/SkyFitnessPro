@@ -93,8 +93,22 @@ export const userApi = {
 // Courses API
 export const coursesApi = {
   getAll: async (): Promise<Course[]> => {
-    const response = await apiClient.getClient().get<Course[]>("/courses");
-    return response.data;
+    const response = await apiClient
+      .getClient()
+      .get<Course[] | { courses: Course[] } | { data: Course[] }>("/courses");
+    const data = response.data;
+    if (Array.isArray(data)) {
+      return data;
+    }
+    if (data && typeof data === "object") {
+      if ("courses" in data && Array.isArray(data.courses)) {
+        return data.courses;
+      }
+      if ("data" in data && Array.isArray(data.data)) {
+        return data.data;
+      }
+    }
+    return [];
   },
 
   getById: async (courseId: string): Promise<Course> => {
