@@ -204,13 +204,13 @@ export default function ProfilePageClient() {
       return;
     }
 
-    const cachedProfile = courses === null ? loadCachedCourses(user.email) : null;
+    const cachedProfile = loadCachedCourses(user.email);
     if (cachedProfile) {
       setCourses(cachedProfile);
     }
 
     const loadKey = `${user.email ?? "user"}:${courseIds.join(",")}`;
-    if (lastLoadKeyRef.current === loadKey && courses !== null) {
+    if (lastLoadKeyRef.current === loadKey) {
       return;
     }
     lastLoadKeyRef.current = loadKey;
@@ -275,7 +275,7 @@ export default function ProfilePageClient() {
     return () => {
       isMounted = false;
     };
-  }, [courses, isAuthenticated, isLoading, user]);
+  }, [isAuthenticated, isLoading, user]);
 
   useEffect(() => {
     if (isLoading) {
